@@ -17,13 +17,10 @@ def js(filename):
     return static_file(filename, root='static/js/')
 
 
-
 # routing
 @app.route('/')
 def index():
 	return template("entry.tpl")
-
-
 
 
 run(app, host='localhost', port=8080, reloader=True)
