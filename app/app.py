@@ -1,13 +1,16 @@
 import bottle
 import bottle.ext.sqlite
-from bottle import Bottle, run, static_file, template, debug, redirect, request
+from bottle import Bottle, abort, response, run, static_file, template, debug, redirect, request
 import json
+import sys
 
 app = Bottle()
 
 #install db connection
 plugin = bottle.ext.sqlite.Plugin(dbfile='./db/dietetika.sqlite')
 app.install(plugin)
+
+app.catchall = False
 
 
 # statične datoteka, torej css/js/fonti
@@ -174,10 +177,15 @@ def consumable_enter_post(db):
 					db.execute(q, (consumable_id, nutrient['id'], nutrient['value']))
 				c = db.execute("COMMIT")
 				return json.dumps("Consumable successfully created")
-		
-	except expression as identifier:
-		abort(500, json.dumps(identifier))
-
+	except db.Error:
+		e = sys.exc_info()[0]
+		db.execute('ROLLBACK')
+		response.status = 500
+		return e
+	except:
+		e = sys.exc_info()[0]
+		response.status = 500
+		return e
 @app.route('/nutrients')
 def nutrients_list(db):
 

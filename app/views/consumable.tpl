@@ -1,9 +1,14 @@
 %include('./base/header.tpl')
 
-<div class="container main-content" data-modify-type='{{modify_type}}'>
+<div class="container main-content">
+	<div id="errors-wrapper" class="alert alert-danger hidden">
+		<ul>
+
+		</ul>
+	</div>
 	<div class="row">
 		<div class="col-sm-8">
-			<form action="/action_page.php">
+			<form id="consumable-modify" data-modify-type='{{modify_type}}'>
 				% if (c and c['id']):
 				<input id="consumable_id" type="text" value = '{{c["id"]}}' class='hidden'>
 				% end
@@ -11,7 +16,7 @@
 				<div class="form-group">
 					<label for="title">Consumable title:</label>
 					<input type="text" class="form-control" id="title"
-					% if (c['title']):
+					% if (c and c['title']):
 					value = '{{c["title"]}}'
 					% end
 					>
@@ -22,7 +27,7 @@
 						<option value="-1">Not selected</option>
 						% for con_type in ct:
 						<option value="{{con_type['id']}}" 
-						% if (c is not None and c['consumable_type_id'] and c['consumable_type_id'] == con_type['id']):
+						% if (c and c['consumable_type_id'] and c['consumable_type_id'] == con_type['id']):
 						selected
 						% end
 						 >{{con_type['title']}}</option>
@@ -32,7 +37,7 @@
 				<div class="form-group">
 					<label for="calories">Calories:</label>
 					<input type="text" class="form-control" id="calories" 
-					% if (c['calories']):
+					% if (c and c['calories']):
 					value='{{c["calories"]}}'
 					% end
 					>

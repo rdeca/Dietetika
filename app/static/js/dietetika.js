@@ -3,6 +3,8 @@ $(document).ready(function(){
 	var consumableNutrients = [];
 	var $nutrientTable = $("#consumable_nutrients_table"); 
 	var $nutrientTableWrapper = $nutrientTable.closest("#consumable_nutrients_table_wrapper"); 
+	var $consumableForm = $("#consumable-modify");
+	var $modifyType = $consumableForm.attr('data-modify-type');
 
 	// bind add nutrient to consumable
 	$("#add-nutrient-to-consumable").on("click", function(ev){
@@ -72,6 +74,77 @@ $(document).ready(function(){
 		
 		hideShowTable($nutrientTableWrapper);
 	}
+
+
+	// MAIN FUNCTION FOR POSTING FORM
+	$consumableForm.on("submit", function(ev){
+		ev.preventDefault();
+
+		var $errorsWrapper = $("#errors-wrapper");
+		var $titleInput = $consumableForm.find("#title");
+		var $consumableTypeSelect = $consumableForm.find("#consumable_type_select");
+		var $caloriesInput = $consumableForm.find("#calories");
+
+		var title = $titleInput.val();
+		var consumableType = $consumableTypeSelect.val();
+		var calories = $caloriesInput.val();
+
+
+		// hide previous erros if exist
+		$errorsWrapper.addClass("hidden");
+		$errorsWrapper.find("li").remove();
+
+		var errors = "";
+
+		if (!title) {
+			//TODO: add err wrapper and add field to insert title
+			errors += "<li>Manjka ime izdelka.</li>";
+		}
+		if (consumableType == -1){
+			errors += "<li>Manjka tip izdelka</li>";
+		}
+		if (!calories) {
+			errors += "<li>Manjkajo kalorije</li>";
+		}
+
+		if (!title || consumableType == -1 || !calories) {
+			// TODO: append errors to wrapper and show it
+			$errorsWrapper.find("ul").append(errors);
+			$errorsWrapper.removeClass("hidden");
+			return;
+		}
+
+		// consumable json
+		var consumableJson = {
+			title: title,
+			consumable_type_id: consumableType,
+			calories: calories,
+			nutrients: consumableNutrients
+		};
+
+		// consumable path
+		var postUrl = "/consumable-enter";
+		if ($modifyType == 'edit') {
+			postUrl = "/consumable-edit"
+		}
+		
+		$.ajax({
+			type: "POST",
+			url: postUrl,
+			contentType: "application/json",
+        	dataType: "json",
+			data: JSON.stringify(consumableJson),
+			success: function(data, status, xhr) {
+				if (xhr.status == 200) {
+					window.location.href = "/consumables";
+				}
+			},
+			error: function(xhr, status, error) {
+				// handle error
+				console.error(error);
+			}
+		});
+	});
 
 	function createNutrientsTableRow(nutrient){
 		var row = "<tr data-id='" + nutrient.id + "'>";
