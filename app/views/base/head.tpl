@@ -1,5 +1,5 @@
 <head>
-	<title></title>
+	<title>Dietetika</title>
 
 	<link href='/css/bootstrap.min.css' rel='stylesheet'>
 	<link href='/css/bootstrap-theme.min.css' rel='stylesheet' type='css'>
@@ -7,4 +7,5 @@
 	
 	<script src='/js/jquery.2.2.4.min.js'></script>
 	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/dietetika.js"></script>
 </head>

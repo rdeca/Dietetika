@@ -10,6 +10,7 @@ footer, header{
 dl {
 
 }
+
 dl dd {
 	margin-left: 20px;
 	margin-bottom: 20px;
@@ -21,4 +22,20 @@ dl dd {
 .entry-manipulation .glyphicon{
 	display: inline-block;
 	margin-right: 15px;
+}
+
+/* consumable */
+.form-control.limit-width{
+	max-width: 250px;
+	display: inline-block;
+}
+.form-control.limit-width.smaller{
+	max-width: 150px;
+}
+#add-nutrient-to-consumable-wrapper #add-nutrient-to-consumable {
+	margin-top: 10px;
+	display: block;
+}
+#consumable_nutrients_table tbody tr td {
+	vertical-align: middle;
 }

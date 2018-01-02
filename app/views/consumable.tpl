@@ -1,62 +1,87 @@
-
 %include('./base/header.tpl')
 
-<div class="container main-content">
-	% if c:
-		<dl>
-			<dt>Title</dt>
-			<dd>{{c['title']}}</dd>
-			<dt>Consumable type</dt>
-			<dd>{{c['consumable_type_title']}}</dd>
-			<dt>Consumable type parent</dt>
-			<dd>{{c['consumable_type_parent_title']}}</dd>
-			<dt>Consumable type parent</dt>
-			<dd>{{c['calories']}}</dd>
-			% if len(n) > 0:
-			<dt>Nurients</dt>
-			<dd>
-				<ul>
-					% for nutrient in n:
-					<li>
-						<dl>
-							<dt>
-								Nutrient title
-							</dt>
-							<dd>
-								{{nutrient['title']}}
-							</dd>
-							<dt>
-								Nutrient parent
-							</dt>
-							<dd>
-								{{nutrient['nutrient_type_title']}}
-							</dd>
-							<dt>
-								Nutrient value
-							</dt>
-							<dd>
-								{{nutrient['value']}}
-							</dd>
-						</dl>
-						
-					</li>
-					% end 
-				</ul>
-			</dd>
-			% end
-		</dl>
-		<div class="clearfix"></div>
-		<div class="entry-manipulation">
-			<a href="/consumable-edit/{{c['id']}}" class="btn btn-primary">
-				<span class='glyphicon glyphicon-pencil'></span>Edit
-			</a>
-			<a href="/consumable-delete/{{c['id']}}" class="btn btn-danger">
-				<span class='glyphicon glyphicon-remove'></span>Delete
-			</a>
+<div class="container main-content" data-modify-type='{{modify_type}}'>
+	<div class="row">
+		<div class="col-sm-8">
+			<form action="/action_page.php">
+				% if (c and c['id']):
+				<input id="consumable_id" type="text" value = '{{c["id"]}}' class='hidden'>
+				% end
+
+				<div class="form-group">
+					<label for="title">Consumable title:</label>
+					<input type="text" class="form-control" id="title"
+					% if (c['title']):
+					value = '{{c["title"]}}'
+					% end
+					>
+				</div>
+				<div class="form-group">
+					<label for="consumable_type">Consumable type:</label>
+					<select name="consumable_type_select" id="consumable_type_select" class='form-control'>
+						<option value="-1">Not selected</option>
+						% for con_type in ct:
+						<option value="{{con_type['id']}}" 
+						% if (c is not None and c['consumable_type_id'] and c['consumable_type_id'] == con_type['id']):
+						selected
+						% end
+						 >{{con_type['title']}}</option>
+						% end
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="calories">Calories:</label>
+					<input type="text" class="form-control" id="calories" 
+					% if (c['calories']):
+					value='{{c["calories"]}}'
+					% end
+					>
+				</div>
+				<div class="form-group">
+					<div id="consumable_nutrients_table_wrapper" class='hidden'>
+						<label for="calories">Nutrients:</label>
+						<table id="consumable_nutrients_table" class='table table-striped'
+						% if (cn is not None):
+							data-consumable-nutrients='{{cn}}'
+						% end
+						>
+							<thead>
+								<th>
+									Nutrient
+								</th>
+								<th>
+									Value
+								</th>
+								<th>
+									
+								</th>
+							</thead>
+							<tbody>
+								% #done with ajax on load
+							</tbody>
+						</table>
+					</div>
+					
+					<br>
+					<div class="form-group">
+						<label for="add_nutrient" class='form-label'>Add nutrient:</label>
+						<div id='add-nutrient-to-consumable-wrapper'>
+							<select name="nutrient" id="nutrient" class='form-control limit-width'>
+								<option value="-1">Not selected</option>
+								% for nutrient in n:
+								<option value="{{nutrient['id']}}">{{nutrient['title']}}</option>
+								% end
+							</select>
+							<input type="text" name="nutrient_value" id="nutrient_value" class='form-control limit-width smaller'>							<button type="button" id='add-nutrient-to-consumable' class='btn btn-primary'>
+								<span class="glyphicon glyphicon-plus"></span> Add
+							</button>
+						</div>
+					</div>
+				</div>
+				<button type="submit" class="btn btn-default">Submit</button>
+			</form>
 		</div>
-	% else:
-	<p>Ni vnosa za izbran id.</p>
-	% end
+	</div>
 </div>
 
 %include('./base/footer.tpl')
