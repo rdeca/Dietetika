@@ -1,0 +1,24 @@
+.main-content{
+	padding-top: 25px;
+	padding-bottom: 25px;
+}
+
+footer, header{
+	padding: 30px 15px;
+}
+
+dl {
+
+}
+dl dd {
+	margin-left: 20px;
+	margin-bottom: 20px;
+}
+
+.entry-manipulation {
+	margin-top: 20px;
+}
+.entry-manipulation .glyphicon{
+	display: inline-block;
+	margin-right: 15px;
+}

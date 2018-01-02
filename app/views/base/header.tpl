@@ -1,5 +1,5 @@
 %include('./base/head.tpl')
-<div class="container">
+<header class="container">
 	<h1>Dietetika</h1>
-</div>
+</header>
 %include('./base/navigation.tpl')

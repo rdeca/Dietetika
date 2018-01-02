@@ -1,6 +1,6 @@
 %include('./base/header.tpl')
 
-<div class="container">
+<div class="container main-content">
 	% if (len(consumables) != 0):
 	<table class="table table-striped">
 		<thead>
@@ -16,7 +16,9 @@
 			% for c in consumables:
 				<tr>
 					<td>
-						{{c['title']}}
+						<a href='/consumable/{{c["id"]}}'>
+							{{c['title']}}
+						</a>
 					</td>
 					<td>
 						{{c['consumable_type_title']}}
