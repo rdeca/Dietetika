@@ -196,7 +196,7 @@ def consumable_enter(db):
 
 	return template('consumable.tpl', modify_type = modify_type, ct = consumable_types, n = nutrients, cn = consumable_nutrients, c = consumable)
 
-# ajax crete
+# ajax create
 @app.route('/consumable-enter', method = 'POST')
 def consumable_enter_post(db):
 
@@ -238,18 +238,45 @@ def consumable_enter_post(db):
 @app.route('/nutrients')
 def nutrients_list(db):
 
-	q = """SELECT * 
-				FROM nutrient n"""
-	c = db.execute(q)
-	nutrients = c.fetchall()
-
 	# check if ajax or normal ( json / template )
 	is_ajax = request.query.isAjax
-	if is_ajax == '1':
+	if is_ajax == '1':	
+		q = """SELECT * 
+					FROM nutrient n"""
+		c = db.execute(q)
+		nutrients = c.fetchall()
 		return json.dumps( [dict(ix) for ix in nutrients] )
-	else:
-		pass
+	else: 
+		q = """SELECT n.id,
+						n.title,
+						nt.title as nutrient_type_title 
+					FROM nutrient n 
+						LEFT JOIN nutrient_type nt ON (n.nutrient_type_id = nt.id)"""
+		c = db.execute(q)
+		nutrients = c.fetchall()
+		return template('nutrient-list.tpl', nutrients = nutrients)
 
+
+@app.route('/nutrient/<id>')
+def nutrient_details(id, db):
+	q = """SELECT n.id,
+					n.title,
+					nt.id as nutrient_type_id,
+					nt.title as nutrient_type_title
+				FROM nutrient n 
+					LEFT JOIN nutrient_type nt ON (n.nutrient_type_id = nt.id) 
+				WHERE n.id = ?"""
+	
+	c = db.execute(q, id)
+	nutrient = c.fetchone()
+
+	return template('nutrient-details.tpl', n = nutrient)
+
+@app.route('/nutrient-delete/<id>')
+def nutrient_delete(id, db):
+	q = """DELETE FROM nutrient WHERE id = ?"""
+	db.execute(q, id)
+	redirect('/nutrients')
 
 debug(True)
 run(app, host='localhost', port=8080, reloader=True)
