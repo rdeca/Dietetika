@@ -70,7 +70,7 @@ def consumable(consumable_id, db):
 							chn.value  
 						FROM consumable_has_nutrient chn 
 							LEFT JOIN nutrient n ON (chn.nutrient_id = n.id)
-							LEFT JOIN nutrient_type nt ON (n.nutrient_type_id = n.id)
+							LEFT JOIN nutrient_type nt ON (n.nutrient_type_id = nt.id)
 						WHERE chn.consumable_id = '{id}'""".format(id = consumable_id)
 	c = db.execute(q_nutrients)
 	nutrients = c.fetchall()
@@ -125,6 +125,53 @@ def consumable_edit(id, db):
 	consumable_nutrients = c.fetchall()
 	consumable_nutrients = json.dumps([dict(x) for x in consumable_nutrients])
 	return template('consumable.tpl', modify_type = modify_type, ct = consumable_types, n = nutrients, cn = consumable_nutrients, c = consumable)
+
+#POSTING edit consumable
+@app.route('/consumable-edit/<id>', method='POST')
+def consumable_edit(id, db):
+	try:
+		req_json = request.json
+
+		q = """UPDATE consumable 
+				SET title = ?, 
+				consumable_type_id = ?, 
+				calories = ? 
+			WHERE id = ?"""
+		
+		db.execute(q, (req_json['title'], req_json['consumable_type_id'], req_json['calories'], id))
+
+		valid_nutrient_ids = []
+		for nutrient in req_json['nutrients']:
+			# 1.check if combination exists in this case change value
+			q = """SELECT * FROM consumable_has_nutrient WHERE consumable_id = ? AND nutrient_id = ?; """
+			c = db.execute(q, (id, nutrient['id']))
+			consumable_nutrient = c.fetchone()
+
+			valid_nutrient_ids.append(nutrient['id'])
+
+			if (consumable_nutrient is not None):
+				q = """UPDATE consumable_has_nutrient SET value = ? WHERE consumable_id = ? AND nutrient_id = ?;"""
+				db.execute(q, (nutrient['value'], id, nutrient['id']))
+			else: 
+				q = """INSERT INTO consumable_has_nutrient (consumable_id, nutrient_id, value) VALUES (?, ?, ?);"""
+				db.execute(q, (id, nutrient['id'], nutrient['value']))
+			
+		# 2. delete those that dont fix
+		
+		# valid_nutrient_ids = '(' + valid_nutrient_ids + ')'
+		q = """DELETE FROM consumable_has_nutrient WHERE consumable_id = ? AND nutrient_id NOT IN (%s)""" % ("?," * len(valid_nutrient_ids))[:-1]
+		valid_nutrient_ids.insert(0, id)
+		c = db.execute(q, valid_nutrient_ids)
+		return json.dumps('Consumable successfully updated.')
+	except db.Error:
+		e = sys.exc_info()[0]
+		db.execute('ROLLBACK')
+		response.status = 500
+		return e
+	except:
+		e = sys.exc_info()[0]
+		response.status = 500
+		return e
 
 @app.route('/consumable-enter')
 def consumable_enter(db):
@@ -186,6 +233,8 @@ def consumable_enter_post(db):
 		e = sys.exc_info()[0]
 		response.status = 500
 		return e
+
+
 @app.route('/nutrients')
 def nutrients_list(db):
 

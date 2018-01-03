@@ -5,6 +5,7 @@ $(document).ready(function(){
 	var $nutrientTableWrapper = $nutrientTable.closest("#consumable_nutrients_table_wrapper"); 
 	var $consumableForm = $("#consumable-modify");
 	var $modifyType = $consumableForm.attr('data-modify-type');
+	var consumableId = $("#consumable_id").val();
 
 	// bind add nutrient to consumable
 	$("#add-nutrient-to-consumable").on("click", function(ev){
@@ -68,7 +69,7 @@ $(document).ready(function(){
 		var row;
 		for (var i = 0; i<json.length; i++) {
 			row = createNutrientsTableRow(json[i]);
-			consumableNutrients.push(json[i].id);
+			consumableNutrients.push(json[i]);
 			$nutrientTable.find("tbody").append(row);
 		}
 		
@@ -125,7 +126,7 @@ $(document).ready(function(){
 		// consumable path
 		var postUrl = "/consumable-enter";
 		if ($modifyType == 'edit') {
-			postUrl = "/consumable-edit"
+			postUrl = "/consumable-edit/"+consumableId
 		}
 		
 		$.ajax({
