@@ -1,2 +1,4 @@
 # Dietetika
-Enostavno poosebljeno računanje makrohranil in kalorične vrednosti porcije, glede na uporabnikove mere roke.
+Tabela kaloričnih vrednosti živil, mikro in makro hranil ter kalkulacij glede na težo izdelka.
+
+![Diagram](Diagram1.jpeg)
