@@ -9,8 +9,6 @@
 			<dt>Consumable type</dt>
 			<dd>{{c['consumable_type_title']}}</dd>
 			<dt>Consumable type parent</dt>
-			<dd>{{c['consumable_type_parent_title']}}</dd>
-			<dt>Consumable type parent</dt>
 			<dd>{{c['calories']}}</dd>
 			% if len(n) > 0:
 			<dt>Nurients</dt>

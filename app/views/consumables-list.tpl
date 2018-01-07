@@ -7,7 +7,6 @@
 		  <tr>
 			<th>Consumable</th>
 			<th>Consumable type</th>
-			<th>Consumable type parent</th>
 			<th>Calories</th>
 			<th>Nutrients</th>
 		  </tr>
@@ -23,9 +22,7 @@
 					<td>
 						{{c['consumable_type_title']}}
 					</td>
-					<td>
-						{{c['consumable_type_parent_title']}}
-					</td>
+
 					<td>
 						{{c['calories']}}
 					</td>

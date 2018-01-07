@@ -19,7 +19,7 @@ dl dd {
 .entry-manipulation {
 	margin-top: 20px;
 }
-.entry-manipulation .glyphicon{
+.entry-manipulation .glyphicon, .manipulation-btns .glyphicon{
 	display: inline-block;
 	margin-right: 15px;
 }
@@ -36,6 +36,6 @@ dl dd {
 	margin-top: 10px;
 	display: block;
 }
-#consumable_nutrients_table tbody tr td {
+.table tbody tr td {
 	vertical-align: middle;
 }

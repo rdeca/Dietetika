@@ -38,11 +38,9 @@ def consumables(db):
 					c.title,
 					c.calories,
 					ct.title as consumable_type_title,
-					ctp.title as consumable_type_parent_title,
 					count(chn.nutrient_id) as nutrient_count 
 			FROM consumable c 
 				LEFT JOIN consumable_type ct ON (c.consumable_type_id = ct.id) 
-				LEFT JOIN consumable_type_parent ctp ON (ct.consumable_type_parent_id = ctp.id)
 				LEFT JOIN consumable_has_nutrient chn ON (chn.consumable_id = c.id)
 			GROUP BY c.id
 			ORDER BY c.id"""
@@ -56,13 +54,11 @@ def consumable(consumable_id, db):
 	q = """SELECT c.id, 
 					c.title,
 					ct.title as consumable_type_title,
-					ctp.title as consumable_type_parent_title,
 					c.calories 
 				FROM consumable c 
 				LEFT JOIN consumable_type ct ON (c.consumable_type_id = ct.id) 
-				LEFT JOIN consumable_type_parent ctp ON (ct.consumable_type_parent_id = ctp.id) 
-				WHERE c.id = '{id}'""".format(id = consumable_id)
-	c = db.execute(q)
+				WHERE c.id = ?"""
+	c = db.execute(q, consumable_id)
 	consumable = c.fetchone()
 	q_nutrients = """SELECT n.id,
 							n.title,
@@ -71,17 +67,17 @@ def consumable(consumable_id, db):
 						FROM consumable_has_nutrient chn 
 							LEFT JOIN nutrient n ON (chn.nutrient_id = n.id)
 							LEFT JOIN nutrient_type nt ON (n.nutrient_type_id = nt.id)
-						WHERE chn.consumable_id = '{id}'""".format(id = consumable_id)
-	c = db.execute(q_nutrients)
+						WHERE chn.consumable_id = ? """
+	c = db.execute(q_nutrients, consumable_id)
 	nutrients = c.fetchall()
 	return template("consumable-details.tpl", c = consumable, n = nutrients)
 
 @app.route('/consumable-delete/<id>')
 def consumable_delete(id, db):
-	q = "DELETE FROM consumable WHERE id = {id}".format(id = id)
+	q = "DELETE FROM consumable WHERE id = ? "
 	c = db.execute(q)
 	if c.rowcount == 1:
-		redirect('/consumables')
+		redirect('/consumables', id)
 	else:
 		redirect('/consumable/{id}'.format(id=id))
 
@@ -110,8 +106,8 @@ def consumable_edit(id, db):
 					c.calories,
 					c.consumable_type_id  
 				FROM consumable c 
-				WHERE c.id = '{id}'""".format(id = id)
-	c = db.execute(q)
+				WHERE c.id = ? """
+	c = db.execute(q, id)
 	consumable = c.fetchone()
 	# consumable has nutrients
 
@@ -120,8 +116,8 @@ def consumable_edit(id, db):
 					chn.value  
 			FROM consumable_has_nutrient chn 
 				LEFT JOIN nutrient n ON (chn.nutrient_id = n.id)
-			WHERE chn.consumable_id = '{id}'""".format(id = id)
-	c = db.execute(q)
+			WHERE chn.consumable_id = ? """
+	c = db.execute(q, id)
 	consumable_nutrients = c.fetchall()
 	consumable_nutrients = json.dumps([dict(x) for x in consumable_nutrients])
 	return template('consumable.tpl', modify_type = modify_type, ct = consumable_types, n = nutrients, cn = consumable_nutrients, c = consumable)
