@@ -324,6 +324,23 @@ def nutrient_edit_post(id, db):
 		redirect('/nutrients')
 	#TODO: if err
 
-		
+@app.route('/consumable-types')
+def consumable_types(db):
+	q = """SELECT * FROM consumable_type"""
+	c = db.execute(q)
+
+	consumable_types = c.fetchall()
+	
+	return template('consumable-type-list.tpl', consumable_types = consumable_types)
+
+@app.route('/consumable-types-delete/<id>')
+def consumable_types(id, db):
+	q = """DELETE FROM consumable_type WHERE id = ? """
+	c = db.execute(q, id)
+
+	if (c.rowcount > 0):
+		redirect('/consumable-types')
+
+
 debug(True)
 run(app, host='localhost', port=8080, reloader=True)
