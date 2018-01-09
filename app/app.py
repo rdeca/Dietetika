@@ -334,7 +334,7 @@ def consumable_types(db):
 	return template('consumable-type-list.tpl', consumable_types = consumable_types)
 
 @app.route('/consumable-types-delete/<id>')
-def consumable_types(id, db):
+def consumable_types_delete(id, db):
 	q = """DELETE FROM consumable_type WHERE id = ? """
 	c = db.execute(q, id)
 
