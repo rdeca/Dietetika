@@ -8,6 +8,7 @@
 			<th>Nutrient</th>
 			<th>Nutrient type</th>
 			<th></th>
+			<th></th>
 		  </tr>
 		</thead>
 		<tbody>
@@ -26,7 +27,11 @@
 							<span class="glyphicon glyphicon-pencil"></span> Edit
 						</a>
 					</td>
-					
+					<td class='manipulation-btns'>
+						<a class='btn btn-danger' href='/nutrient-delete/{{n["id"]}}'>
+							<span class="glyphicon glyphicon-trash"></span> Delete
+						</a>
+					</td>
 				</tr>
 			% end
 		</tbody>
