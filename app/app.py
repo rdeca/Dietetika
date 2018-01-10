@@ -416,5 +416,19 @@ def nutrient_types_edit_post(id, db):
 	if (c.rowcount>0):
 		redirect('/nutrient-types')
 
+@app.route('/nutrient-types/<id>')
+def nutrient_type(id, db):
+	q = "SELECT * FROM nutrient_type WHERE id=:id;"
+	c = db.execute(q, {'id': id})
+	nutrient_type = c.fetchone()
+	return template('nutrient-type-details.tpl', nt = nutrient_type)
+
+@app.route('/nutrient-types-delete/<id>')
+def nutrient_type_delete(id, db):
+	q = "DELETE FROM nutrient_type WHERE id=:id;"
+	c = db.execute(q, {'id': id})
+	if (c.rowcount > 0):
+		redirect('/nutrient-types')
+
 debug(True)
 run(app, host='localhost', port=8080, reloader=True)
