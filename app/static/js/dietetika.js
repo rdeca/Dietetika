@@ -13,6 +13,8 @@ $(document).ready(function(){
 
 	setAutoComplete();
 
+	setFilterByConsumableType();
+
 	// bind add nutrient to consumable
 	$("#add-nutrient-to-consumable").on("click", function(ev){
 		ev.preventDefault();
@@ -184,7 +186,7 @@ $(document).ready(function(){
 	}
 
 	function setActiveNavigation(){
-			var url = window.location;
+			var url = window.location.pathname;
 		// Will only work if string in href matches with location
 			$('ul.nav a[href="' + url + '"]').parent().addClass('active');
 	
@@ -199,6 +201,14 @@ $(document).ready(function(){
 		$("#search-consumable-title #title").autocomplete({
 			serviceUrl: '/consumables?isAjax=1'
 		});
+	}
+	function setFilterByConsumableType() {
+		$("#consumable_type_select").on("change", function(){
+			var selected = $(this).val();
+			if (selected != -1) {
+				$(this).closest('form').submit();
+			}
+		})
 	}
 
 });

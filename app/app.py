@@ -54,6 +54,12 @@ def consumables(db):
 
 		return json.dumps(returned_dict)
 	else:
+		#uporaben ko so posredovani search parameteri
+		query_dict = {}
+
+		title = request.query.title
+		consumable_type_id = request.query.consumable_type_select
+
 		q = """SELECT c.id,
 					c.title,
 					c.calories,
@@ -61,11 +67,21 @@ def consumables(db):
 					count(chn.nutrient_id) as nutrient_count 
 			FROM consumable c 
 				LEFT JOIN consumable_type ct ON (c.consumable_type_id = ct.id) 
-				LEFT JOIN consumable_has_nutrient chn ON (chn.consumable_id = c.id)
-			GROUP BY c.id
+				LEFT JOIN consumable_has_nutrient chn ON (chn.consumable_id = c.id) 
+			WHERE 1 """
+
+		if title:
+			title_string = "%{title}%".format(title=title)
+			query_dict['title'] = title_string
+			q += " AND c.title LIKE :title "
+		if consumable_type_id:
+			query_dict['consumable_type_id'] = consumable_type_id
+			q += " AND c.consumable_type_id = :consumable_type_id "
+
+		q += """GROUP BY c.id
 			ORDER BY c.id"""
 
-		c = db.execute(q)
+		c = db.execute(q, query_dict)
 		r_consumables = c.fetchall()
 
 		q = """SELECT * FROM consumable_type"""

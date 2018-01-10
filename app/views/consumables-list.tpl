@@ -13,13 +13,16 @@
 			</form>
 		</div>
 		<div class="col-sm-offset-3 col-sm-3 text-right">
-			Tip artikla:
-			<select style='display: inline-block; width:auto;' name="consumable_type_select" id="consumable_type_select" class='form-control'>
-				<option value="-1"></option>
-				% for ct in consumable_types:
-				<option value="{{ct['id']}}">{{ct['title']}}</option>
-				% end
-			</select>
+			<form method='GET'>
+				<div class="form-group">
+					<select name="consumable_type_select" id="consumable_type_select" class='form-control'>
+						<option value="-1"></option>
+						% for ct in consumable_types:
+						<option value="{{ct['id']}}">{{ct['title']}}</option>
+						% end
+					</select>
+				</div>
+			</form>			
 		</div>
 	</div>
 
