@@ -335,11 +335,52 @@ def consumable_types(db):
 
 @app.route('/consumable-types-delete/<id>')
 def consumable_types_delete(id, db):
-	q = """DELETE FROM consumable_type WHERE id = ? """
-	c = db.execute(q, id)
+	q = """DELETE FROM consumable_type WHERE id =:id;"""
+	c = db.execute(q, {'id': id})
 
 	if (c.rowcount > 0):
 		redirect('/consumable-types')
+
+@app.route('/consumable-types/<id>')
+def consumable_types_details(id, db):
+	q = """SELECT * FROM consumable_type WHERE id = ?;"""
+	c = db.execute(q, id)
+	
+	consumable_type = c.fetchone()
+	return template('consumable-types-details.tpl', ct = consumable_type)	
+
+@app.route('/consumable-types-edit/<id>')
+def consumable_types_edit(id, db):
+	q = """SELECT * FROM consumable_type WHERE id = :id;"""
+	c = db.execute(q, {'id': id})
+	consumable_type = c.fetchone()
+
+	return template('consumable-types.tpl', ct = consumable_type)
+
+@app.route('/consumable-types-edit/<id>', method='POST')
+def consumable_types_edit_post(id, db):
+
+	title = request.forms.get('title')
+	q = """UPDATE consumable_type SET title = :title WHERE id = :id;"""
+	c = db.execute(q, {'title': title, 'id': id})
+	if (c.rowcount > 0):
+		redirect('/consumable-types')
+	#TODO: handle errs
+
+@app.route('/consumable-types-enter')
+def consumable_types_enter(db):
+	return template('consumable-types.tpl', ct = None)
+
+@app.route('/consumable-types-enter', method='POST')
+def consumable_types_enter_post(db):
+	consumable_type = request.forms.get('title')
+	q = """INSERT INTO consumable_type (title) VALUES (:title);"""
+	c = db.execute(q, {'title': consumable_type})
+
+	if (c.rowcount > 0):
+		redirect('/consumable-types')
+	#TODO: err handle
+
 
 
 debug(True)

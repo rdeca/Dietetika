@@ -14,7 +14,7 @@
 			% for c in consumable_types:
 				<tr>
 					<td style='width: 50%;'>
-						<a href='/consumable/{{c["id"]}}'>
+						<a href='/consumable-types/{{c["id"]}}'>
 							{{c['title']}}
 						</a>
 					</td>
