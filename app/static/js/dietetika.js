@@ -9,6 +9,8 @@ $(document).ready(function(){
 
 	setFormBootstrapValidator();
 
+	setActiveNavigation();
+
 	// bind add nutrient to consumable
 	$("#add-nutrient-to-consumable").on("click", function(ev){
 		ev.preventDefault();
@@ -177,6 +179,17 @@ $(document).ready(function(){
 		$('form').validator({
 			
 		});
+	}
+
+	function setActiveNavigation(){
+			var url = window.location;
+		// Will only work if string in href matches with location
+			$('ul.nav a[href="' + url + '"]').parent().addClass('active');
+	
+		// Will also work for relative and absolute hrefs
+			$('ul.nav a').filter(function () {
+				return this.href == url;
+			}).parent().addClass('active').parent().parent().addClass('active');
 	}
 
 });

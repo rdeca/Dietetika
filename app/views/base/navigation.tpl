@@ -12,9 +12,11 @@
 		<!-- Collection of nav links and other content for toggling -->
 		<div id="navbarCollapse" class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="/">Domov</a></li>
-				<li><a href="/list-all">Pregled</a></li>
-				<li><a href="/enter">Vnos</a></li>
+				<li><a href="/entry">Domov</a></li>
+				<li><a href="/consumables">Živila</a></li>
+				<li><a href="/consumable-types">Tipi živil</a></li>
+				<li><a href="/nutrients">Hranila</a></li>
+				<li><a href="/nutrient-types">Tipi hranil</a></li>
 			</ul>
 		</div>
 	</div>
