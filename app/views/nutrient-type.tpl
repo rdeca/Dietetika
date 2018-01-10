@@ -15,11 +15,12 @@
 
 				<div class="form-group">
 					<label for="title">Nutrient type:</label>
-					<input name="title" type="text" class="form-control" id="title"
+					<input name="title" type="text" required data-required-error='Obvezno polje' pattern='[\w-]+'data-pattern-error='Neveljavni znaki v polju' class="form-control" id="title"
 					% if (nt and nt['title']):
 					value = '{{nt["title"]}}'
 					% end
 					>
+					<div class="alert alert-danger help-block with-errors"></div>
 				</div>
 				<button type="submit" class="btn btn-default">Submit</button>
 			</form>

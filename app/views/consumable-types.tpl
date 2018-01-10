@@ -15,11 +15,12 @@
 
 				<div class="form-group">
 					<label for="title">Consumable type:</label>
-					<input name="title" type="text" class="form-control" id="title"
+					<input name="title" type="text" required data-required-error='Obvezno polje' pattern='[\w-]+'data-pattern-error='Neveljavni znaki v polju'  class="form-control" id="title"
 					% if (ct and ct['title']):
 					value = '{{ct["title"]}}'
 					% end
 					>
+					<div class="help-block with-errors alert alert-danger"></div>
 				</div>
 				<button type="submit" class="btn btn-default">Submit</button>
 			</form>

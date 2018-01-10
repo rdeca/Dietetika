@@ -7,6 +7,8 @@ $(document).ready(function(){
 	var $modifyType = $consumableForm.attr('data-modify-type');
 	var consumableId = $("#consumable_id").val();
 
+	setFormBootstrapValidator();
+
 	// bind add nutrient to consumable
 	$("#add-nutrient-to-consumable").on("click", function(ev){
 		ev.preventDefault();
@@ -163,6 +165,18 @@ $(document).ready(function(){
 		} else {
 			$nutrientTableWrapper.addClass('hidden');
 		}
+	}
+
+	function manipulateSelectPristine(){
+		$("select").attr('data-pristine', true);
+		$("select").on("change", function(){
+			$(this).removeAttr('data-pristine');
+		})
+	}
+	function setFormBootstrapValidator() {
+		$('form').validator({
+			
+		});
 	}
 
 });

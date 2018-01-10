@@ -39,3 +39,10 @@ dl dd {
 .table tbody tr td {
 	vertical-align: middle;
 }
+
+.form-group .help-block.with-errors {
+	display: none;
+}
+.form-group.has-error .help-block.with-errors {
+	display: block;
+}

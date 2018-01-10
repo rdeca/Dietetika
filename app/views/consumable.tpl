@@ -19,12 +19,12 @@
 					% if (c and c['title']):
 					value = '{{c["title"]}}'
 					% end
-					>
+					required data-required-error='Obvezno polje' pattern='[\w-]+'data-pattern-error='Neveljavni znaki v polju'>
+					<div class="help-block with-errors alert alert-danger"></div>
 				</div>
 				<div class="form-group">
 					<label for="consumable_type">Consumable type:</label>
-					<select name="consumable_type_select" id="consumable_type_select" class='form-control'>
-						<option value="-1">Not selected</option>
+					<select name="consumable_type_select" id="consumable_type_select" required data-required-error='Izberite eno izmed izbir' class='form-control'>
 						% for con_type in ct:
 						<option value="{{con_type['id']}}" 
 						% if (c and c['consumable_type_id'] and c['consumable_type_id'] == con_type['id']):
@@ -33,14 +33,16 @@
 						 >{{con_type['title']}}</option>
 						% end
 					</select>
+					<div class="help-block with-errors alert alert-danger"></div>
 				</div>
 				<div class="form-group">
 					<label for="calories">Calories:</label>
-					<input type="text" class="form-control" id="calories" 
+					<input type="text" class="form-control" pattern='^[0-9][\d\.]+'data-pattern-error='Neveljavni znaki v polju' required data-required-error='Obvezno polje'id="calories" 
 					% if (c and c['calories']):
 					value='{{c["calories"]}}'
 					% end
 					>
+					<div class="help-block with-errors alert alert-danger"></div>
 				</div>
 				<div class="form-group">
 					<div id="consumable_nutrients_table_wrapper" class='hidden'>
@@ -72,7 +74,6 @@
 						<label for="add_nutrient" class='form-label'>Add nutrient:</label>
 						<div id='add-nutrient-to-consumable-wrapper'>
 							<select name="nutrient" id="nutrient" class='form-control limit-width'>
-								<option value="-1">Not selected</option>
 								% for nutrient in n:
 								<option value="{{nutrient['id']}}">{{nutrient['title']}}</option>
 								% end
