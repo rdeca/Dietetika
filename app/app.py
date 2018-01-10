@@ -381,7 +381,40 @@ def consumable_types_enter_post(db):
 		redirect('/consumable-types')
 	#TODO: err handle
 
+@app.route('/nutrient-types')
+def nutrient_types(db):
+	q = "SELECT * FROM nutrient_type;"
+	c = db.execute(q)
+	nutrient_types = c.fetchall()
+	return template('nutrient-type-list.tpl', nutrient_types = nutrient_types)
 
+@app.route('/nutrient-types-enter')
+def nutrient_types_enter(db):
+	return template('nutrient-type.tpl', nt = None)
+
+@app.route('/nutrient-types-enter', method='POST')
+def nutrient_types_enter_post(db):
+	title = request.forms.get('title')
+	q = """INSERT INTO nutrient_type (title) VALUES (:title);"""
+	c = db.execute(q, {'title': title})
+	if (c.rowcount > 0):
+		redirect('/nutrient-types')
+	#TODO: err handle
+
+@app.route('/nutrient-types-edit/<id>')
+def nutrient_types_edit(id, db):
+	q = "SELECT * FROM nutrient_type WHERE id=:id;"
+	c = db.execute(q, {'id': id})
+	nutrient_type = c.fetchone()
+	return template('nutrient-type.tpl', nt = nutrient_type)
+
+@app.route('/nutrient-types-edit/<id>', method = 'POST')
+def nutrient_types_edit_post(id, db):
+	title = request.forms.get('title')
+	q = """UPDATE nutrient_type SET title=:title WHERE id=:id;"""
+	c = db.execute(q, {'title': title, 'id':id})
+	if (c.rowcount>0):
+		redirect('/nutrient-types')
 
 debug(True)
 run(app, host='localhost', port=8080, reloader=True)
