@@ -11,6 +11,8 @@ $(document).ready(function(){
 
 	setActiveNavigation();
 
+	setAutoComplete();
+
 	// bind add nutrient to consumable
 	$("#add-nutrient-to-consumable").on("click", function(ev){
 		ev.preventDefault();
@@ -190,6 +192,13 @@ $(document).ready(function(){
 			$('ul.nav a').filter(function () {
 				return this.href == url;
 			}).parent().addClass('active').parent().parent().addClass('active');
+	}
+
+	function setAutoComplete() {
+		// consumables
+		$("#search-consumable-title #title").autocomplete({
+			serviceUrl: '/consumables?isAjax=1'
+		});
 	}
 
 });

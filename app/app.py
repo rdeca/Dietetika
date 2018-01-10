@@ -34,7 +34,27 @@ def index():
 
 @app.route('/consumables')
 def consumables(db):
-	q = """SELECT c.id,
+
+	is_ajax = request.query.isAjax
+
+	if is_ajax == '1':
+		query = request.query.query
+
+		q = """SELECT id, title 
+				FROM consumable 
+				WHERE title LIKE :title"""
+
+		title_string = "%{title}%".format(title = query)
+		c = db.execute(q, {'title': title_string})
+		results = c.fetchall()
+
+		results_dict = [x['title'] for x in results]
+
+		returned_dict = {'suggestions': results_dict}
+
+		return json.dumps(returned_dict)
+	else:
+		q = """SELECT c.id,
 					c.title,
 					c.calories,
 					ct.title as consumable_type_title,
@@ -45,10 +65,17 @@ def consumables(db):
 			GROUP BY c.id
 			ORDER BY c.id"""
 
-	c = db.execute(q)
-	r_consumables = c.fetchall()
-	return template("consumables-list.tpl", consumables = r_consumables)
+		c = db.execute(q)
+		r_consumables = c.fetchall()
 
+		q = """SELECT * FROM consumable_type"""
+		c = db.execute(q)
+		consumable_types = c.fetchall()
+
+		return template("consumables-list.tpl", consumables = r_consumables, consumable_types = consumable_types)
+
+
+	
 @app.route('/consumable/<consumable_id>')
 def consumable(consumable_id, db):
 	q = """SELECT c.id, 

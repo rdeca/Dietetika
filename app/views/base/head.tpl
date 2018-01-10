@@ -6,6 +6,7 @@
 	<link rel="stylesheet" href="/css/dietetika.css">
 	
 	<script src='/js/jquery.2.2.4.min.js'></script>
+	<script src="/js/jquery.autocomplete.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/bootstrap-form-validator.min.js"></script>
 	<script src="/js/dietetika.js"></script>
