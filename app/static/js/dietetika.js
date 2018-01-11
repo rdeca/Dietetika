@@ -15,6 +15,8 @@ $(document).ready(function(){
 
 	setFilterByConsumableType();
 
+	getSearchParametersOnConsumables();
+
 	// bind add nutrient to consumable
 	$("#add-nutrient-to-consumable").on("click", function(ev){
 		ev.preventDefault();
@@ -185,6 +187,18 @@ $(document).ready(function(){
 		});
 	}
 
+	function getSearchParametersOnConsumables() {
+		let searchParams = new URLSearchParams(window.location.search)
+		var title = searchParams.get('title');
+		var consumableType = searchParams.get('consumable_type_select');
+		if (title) {
+			// title exists / it was filtered by
+			$("#search-consumable-title #title").val(title);
+		}
+		if (consumableType) {
+			$("#consumable_type_select").val(consumableType);
+		}
+	}
 	function setActiveNavigation(){
 			var url = window.location.pathname;
 		// Will only work if string in href matches with location
