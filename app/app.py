@@ -376,7 +376,7 @@ def consumable_types(db):
 	
 	return template('consumable-type-list.tpl', consumable_types = consumable_types)
 
-@app.route('/consumable-types-delete/<id>')
+@app.route('/consumable-type-delete/<id>')
 def consumable_types_delete(id, db):
 	q = """DELETE FROM consumable_type WHERE id =:id;"""
 	c = db.execute(q, {'id': id})
@@ -384,7 +384,7 @@ def consumable_types_delete(id, db):
 	if (c.rowcount > 0):
 		redirect('/consumable-types')
 
-@app.route('/consumable-types/<id>')
+@app.route('/consumable-type/<id>')
 def consumable_types_details(id, db):
 	q = """SELECT * FROM consumable_type WHERE id = ?;"""
 	c = db.execute(q, id)
@@ -392,7 +392,7 @@ def consumable_types_details(id, db):
 	consumable_type = c.fetchone()
 	return template('consumable-types-details.tpl', ct = consumable_type)	
 
-@app.route('/consumable-types-edit/<id>')
+@app.route('/consumable-type-edit/<id>')
 def consumable_types_edit(id, db):
 	q = """SELECT * FROM consumable_type WHERE id = :id;"""
 	c = db.execute(q, {'id': id})
@@ -400,7 +400,7 @@ def consumable_types_edit(id, db):
 
 	return template('consumable-types.tpl', ct = consumable_type)
 
-@app.route('/consumable-types-edit/<id>', method='POST')
+@app.route('/consumable-type-edit/<id>', method='POST')
 def consumable_types_edit_post(id, db):
 
 	title = request.forms.get('title')
@@ -410,11 +410,11 @@ def consumable_types_edit_post(id, db):
 		redirect('/consumable-types')
 	#TODO: handle errs
 
-@app.route('/consumable-types-enter')
+@app.route('/consumable-type-enter')
 def consumable_types_enter(db):
 	return template('consumable-types.tpl', ct = None)
 
-@app.route('/consumable-types-enter', method='POST')
+@app.route('/consumable-type-enter', method='POST')
 def consumable_types_enter_post(db):
 	consumable_type = request.forms.get('title')
 	q = """INSERT INTO consumable_type (title) VALUES (:title);"""
@@ -431,11 +431,11 @@ def nutrient_types(db):
 	nutrient_types = c.fetchall()
 	return template('nutrient-type-list.tpl', nutrient_types = nutrient_types)
 
-@app.route('/nutrient-types-enter')
+@app.route('/nutrient-type-enter')
 def nutrient_types_enter(db):
 	return template('nutrient-type.tpl', nt = None)
 
-@app.route('/nutrient-types-enter', method='POST')
+@app.route('/nutrient-type-enter', method='POST')
 def nutrient_types_enter_post(db):
 	title = request.forms.get('title')
 	q = """INSERT INTO nutrient_type (title) VALUES (:title);"""
@@ -444,14 +444,14 @@ def nutrient_types_enter_post(db):
 		redirect('/nutrient-types')
 	#TODO: err handle
 
-@app.route('/nutrient-types-edit/<id>')
+@app.route('/nutrient-type-edit/<id>')
 def nutrient_types_edit(id, db):
 	q = "SELECT * FROM nutrient_type WHERE id=:id;"
 	c = db.execute(q, {'id': id})
 	nutrient_type = c.fetchone()
 	return template('nutrient-type.tpl', nt = nutrient_type)
 
-@app.route('/nutrient-types-edit/<id>', method = 'POST')
+@app.route('/nutrient-type-edit/<id>', method = 'POST')
 def nutrient_types_edit_post(id, db):
 	title = request.forms.get('title')
 	q = """UPDATE nutrient_type SET title=:title WHERE id=:id;"""
@@ -459,14 +459,14 @@ def nutrient_types_edit_post(id, db):
 	if (c.rowcount>0):
 		redirect('/nutrient-types')
 
-@app.route('/nutrient-types/<id>')
+@app.route('/nutrient-type/<id>')
 def nutrient_type(id, db):
 	q = "SELECT * FROM nutrient_type WHERE id=:id;"
 	c = db.execute(q, {'id': id})
 	nutrient_type = c.fetchone()
 	return template('nutrient-type-details.tpl', nt = nutrient_type)
 
-@app.route('/nutrient-types-delete/<id>')
+@app.route('/nutrient-type-delete/<id>')
 def nutrient_type_delete(id, db):
 	q = "DELETE FROM nutrient_type WHERE id=:id;"
 	c = db.execute(q, {'id': id})

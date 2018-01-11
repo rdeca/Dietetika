@@ -1,6 +1,10 @@
 %include('./base/header.tpl')
 
 <div class="container main-content">
+	<div class="anchors text-right">
+		<a class='btn btn-primary' href='/consumable-type-enter'>Vnesi novega</a>
+		<hr>
+	</div>
 	% if (len(consumable_types) != 0):
 	<table class="table table-striped">
 		<thead>
@@ -14,7 +18,7 @@
 			% for c in consumable_types:
 				<tr>
 					<td style='width: 50%;'>
-						<a href='/consumable-types/{{c["id"]}}'>
+						<a href='/consumable-type/{{c["id"]}}'>
 							{{c['title']}}
 						</a>
 					</td>
@@ -22,12 +26,12 @@
 						{{c['title']}}
 					</td>
 					<td class='manipulation-btns'>
-						<a class='btn btn-info' href='/consumable-types-edit/{{c["id"]}}'>
+						<a class='btn btn-info' href='/consumable-type-edit/{{c["id"]}}'>
 							<span class="glyphicon glyphicon-pencil"></span> Edit
 						</a>
 					</td>
 					<td class='manipulation-btns'>
-						<a class='btn btn-danger' href='/consumable-types-delete/{{c["id"]}}'>
+						<a class='btn btn-danger' href='/consumable-type-delete/{{c["id"]}}'>
 							<span class="glyphicon glyphicon-trash"></span> Delete
 						</a>
 					</td>

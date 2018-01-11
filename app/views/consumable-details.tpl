@@ -2,6 +2,10 @@
 %include('./base/header.tpl')
 
 <div class="container main-content">
+	<div class="anchors text-right">
+		<a class='btn btn-primary' href='/consumables'>Seznam vseh</a>
+		<hr>
+	</div>
 	% if c:
 		<dl>
 			<dt>Title</dt>

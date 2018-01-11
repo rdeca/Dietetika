@@ -1,6 +1,10 @@
 %include('./base/header.tpl')
 
 <div class="container main-content">
+	<div class="anchors text-right">
+		<a class='btn btn-primary' href='/nutrient-types'>Seznam vseh</a>
+		<hr>
+	</div>
 	<div id="errors-wrapper" class="alert alert-danger hidden">
 		<ul>
 

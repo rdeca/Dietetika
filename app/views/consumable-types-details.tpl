@@ -2,6 +2,10 @@
 %include('./base/header.tpl')
 
 <div class="container main-content">
+	<div class="anchors text-right">
+		<a class='btn btn-primary' href='/consumable-types'>Seznam vseh</a>
+		<hr>
+	</div>
 	% if ct:
 		<dl>
 			<dt>Title</dt>
@@ -9,10 +13,10 @@
 		</dl>
 		<div class="clearfix"></div>
 		<div class="entry-manipulation">
-			<a href="/consumable-types-edit/{{ct['id']}}" class="btn btn-primary">
+			<a href="/consumable-type-edit/{{ct['id']}}" class="btn btn-primary">
 				<span class='glyphicon glyphicon-pencil'></span>Edit
 			</a>
-			<a href="/consumable-types-delete/{{ct['id']}}" class="btn btn-danger">
+			<a href="/consumable-type-delete/{{ct['id']}}" class="btn btn-danger">
 				<span class='glyphicon glyphicon-remove'></span>Delete
 			</a>
 		</div>

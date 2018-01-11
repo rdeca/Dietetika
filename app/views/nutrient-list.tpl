@@ -1,6 +1,10 @@
 %include('./base/header.tpl')
 
 <div class="container main-content">
+	<div class="anchors text-right">
+		<a class='btn btn-primary' href='/nutrient-enter'>Vnesi novega</a>
+		<hr>
+	</div>
 	% if (len(nutrients) != 0):
 	<table class="table table-striped">
 		<thead>

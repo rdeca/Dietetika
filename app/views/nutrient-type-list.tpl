@@ -1,6 +1,10 @@
 %include('./base/header.tpl')
 
 <div class="container main-content">
+	<div class="anchors text-right">
+		<a class='btn btn-primary' href='/nutrient-type-enter'>Vnesi novega</a>
+		<hr>
+	</div>
 	% if (len(nutrient_types) != 0):
 	<table class="table table-striped">
 		<thead>
@@ -14,7 +18,7 @@
 			% for nt in nutrient_types:
 				<tr>
 					<td style='width: 50%;'>
-						<a href='/nutrient-types/{{nt["id"]}}'>
+						<a href='/nutrient-type/{{nt["id"]}}'>
 							{{nt['title']}}
 						</a>
 					</td>
@@ -22,12 +26,12 @@
 						{{nt['title']}}
 					</td>
 					<td class='manipulation-btns'>
-						<a class='btn btn-info' href='/nutrient-types-edit/{{nt["id"]}}'>
+						<a class='btn btn-info' href='/nutrient-type-edit/{{nt["id"]}}'>
 							<span class="glyphicon glyphicon-pencil"></span> Edit
 						</a>
 					</td>
 					<td class='manipulation-btns'>
-						<a class='btn btn-danger' href='/nutrient-types-delete/{{nt["id"]}}'>
+						<a class='btn btn-danger' href='/nutrient-type-delete/{{nt["id"]}}'>
 							<span class="glyphicon glyphicon-trash"></span> Delete
 						</a>
 					</td>

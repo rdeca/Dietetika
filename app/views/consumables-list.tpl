@@ -1,6 +1,13 @@
 %include('./base/header.tpl')
 
 <div class="container main-content">
+
+	<div class="anchors text-right">
+		<a class='btn btn-primary' href='/consumable-enter'>Vnesi novega</a>
+		<hr>
+	</div>
+	
+
 	% if (len(consumables) != 0):
 
 	<div class="search-wrapper row">
