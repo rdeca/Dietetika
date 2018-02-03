@@ -1,0 +1,63 @@
+.main-content{
+	padding-top: 25px;
+	padding-bottom: 25px;
+}
+
+footer, header{
+	padding: 30px 15px;
+}
+
+dl {
+
+}
+
+dl dd {
+	margin-left: 20px;
+	margin-bottom: 20px;
+}
+
+.entry-manipulation {
+	margin-top: 20px;
+}
+.entry-manipulation .glyphicon, .manipulation-btns .glyphicon{
+	display: inline-block;
+	margin-right: 15px;
+}
+
+/* consumable */
+.form-control.limit-width{
+	max-width: 250px;
+	display: inline-block;
+}
+.form-control.limit-width.smaller{
+	max-width: 150px;
+}
+#add-nutrient-to-consumable-wrapper #add-nutrient-to-consumable {
+	margin-top: 10px;
+	display: block;
+}
+.table tbody tr td {
+	vertical-align: middle;
+}
+
+.form-group .help-block.with-errors {
+	display: none;
+}
+.form-group.has-error .help-block.with-errors {
+	display: block;
+}
+
+
+/* autocomplete */
+.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
+.autocomplete-suggestion { cursor: pointer; padding: 2px 5px; white-space: nowrap; overflow: hidden; }
+.autocomplete-selected { background: #F0F0F0; }
+.autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
+.autocomplete-group { padding: 2px 5px; }
+.autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
+body {
+    font-family: 'Amatic SC';font-size: 35px;
+}
+.main-content{font-size: 22px; }
+.text-right{font-size: 22px; }
+.search-wrapper row{font-size: 22px; }
