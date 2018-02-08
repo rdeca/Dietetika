@@ -19,7 +19,7 @@
 
 				<div class="form-group">
 					<label for="title">Tip živila:</label>
-					<input name="title" type="text" required data-required-error='Obvezno polje' pattern='[\w-]+'data-pattern-error='Neveljavni znaki v polju'  class="form-control" id="title"
+					<input name="title" type="text" required data-required-error='Obvezno polje' pattern='[\w-ščžŠČŽ]+'data-pattern-error='Neveljavni znaki v polju'  class="form-control" id="title"
 					% if (ct and ct['title']):
 					value = '{{ct["title"]}}'
 					% end

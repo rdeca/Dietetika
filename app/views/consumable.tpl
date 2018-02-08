@@ -23,7 +23,7 @@
 					% if (c and c['title']):
 					value = '{{c["title"]}}'
 					% end
-					required data-required-error='Obvezno polje' pattern='[\w-]+'data-pattern-error='Neveljavni znaki v polju'>
+					required data-required-error='Obvezno polje' pattern='[\w-ščžČŠŽ]+'data-pattern-error='Neveljavni znaki v polju'>
 					<div class="help-block with-errors alert alert-danger"></div>
 				</div>
 				<div class="form-group">
