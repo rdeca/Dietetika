@@ -23,7 +23,7 @@
 					% if (n and n['title']):
 					value = '{{n["title"]}}'
 					% end
-					required data-required-error='Obvezno polje' pattern='[\w-ščžŠČŽ]+'data-pattern-error='Neveljavni znaki v polju'>
+					required data-required-error='Obvezno polje'>
 					<div class="help-block with-errors alert alert-danger"></div>
 
 				</div>

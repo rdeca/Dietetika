@@ -23,7 +23,7 @@
 					% if (c and c['title']):
 					value = '{{c["title"]}}'
 					% end
-					required data-required-error='Obvezno polje' pattern='[\w-ščžČŠŽ]+'data-pattern-error='Neveljavni znaki v polju'>
+					required data-required-error='Obvezno polje'>
 					<div class="help-block with-errors alert alert-danger"></div>
 				</div>
 				<div class="form-group">
@@ -41,7 +41,7 @@
 				</div>
 				<div class="form-group">
 					<label for="calories">Kalorije:</label>
-					<input type="text" class="form-control" pattern='^[0-9][\d\.]+'data-pattern-error='Neveljavni znaki v polju' required data-required-error='Obvezno polje'id="calories" 
+					<input type="text" class="form-control" required data-required-error='Obvezno polje'id="calories" 
 					% if (c and c['calories']):
 					value='{{c["calories"]}}'
 					% end
