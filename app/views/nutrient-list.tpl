@@ -9,8 +9,8 @@
 	<table class="table table-striped">
 		<thead>
 		  <tr>
-			<th>Nutrient</th>
-			<th>Nutrient type</th>
+			<th>Hranilo</th>
+			<th>Tip Hranila</th>
 			<th></th>
 			<th></th>
 		  </tr>
@@ -28,12 +28,12 @@
 					</td>
 					<td class='manipulation-btns'>
 						<a class='btn btn-info' href='/nutrient-edit/{{n["id"]}}'>
-							<span class="glyphicon glyphicon-pencil"></span> Edit
+							<span class="glyphicon glyphicon-pencil"></span> Uredi
 						</a>
 					</td>
 					<td class='manipulation-btns'>
 						<a class='btn btn-danger' href='/nutrient-delete/{{n["id"]}}'>
-							<span class="glyphicon glyphicon-trash"></span> Delete
+							<span class="glyphicon glyphicon-trash"></span> Izbriši
 						</a>
 					</td>
 				</tr>

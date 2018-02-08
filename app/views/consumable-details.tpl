@@ -8,34 +8,22 @@
 	</div>
 	% if c:
 		<dl>
-			<dt>Title</dt>
+			<dt>Živilo</dt> 
 			<dd>{{c['title']}}</dd>
-			<dt>Consumable type</dt>
+			<dt>Tip živila</dt>
 			<dd>{{c['consumable_type_title']}}</dd>
-			<dt>Consumable type parent</dt>
+			<dt>Število kalorij na 100 g</dt>
 			<dd>{{c['calories']}}</dd>
 			% if len(n) > 0:
-			<dt>Nurients</dt>
+			<dt>Hranilne vrednosti </dt>
 			<dd>
 				<ul>
 					% for nutrient in n:
 					<li>
 						<dl>
-							<dt>
-								Nutrient title
-							</dt>
 							<dd>
 								{{nutrient['title']}}
 							</dd>
-							<dt>
-								Nutrient parent
-							</dt>
-							<dd>
-								{{nutrient['nutrient_type_title']}}
-							</dd>
-							<dt>
-								Nutrient value
-							</dt>
 							<dd>
 								{{nutrient['value']}}
 							</dd>
@@ -50,10 +38,10 @@
 		<div class="clearfix"></div>
 		<div class="entry-manipulation">
 			<a href="/consumable-edit/{{c['id']}}" class="btn btn-primary">
-				<span class='glyphicon glyphicon-pencil'></span>Edit
+				<span class='glyphicon glyphicon-pencil'></span>Uredi
 			</a>
 			<a href="/consumable-delete/{{c['id']}}" class="btn btn-danger">
-				<span class='glyphicon glyphicon-remove'></span>Delete
+				<span class='glyphicon glyphicon-remove'></span>Izbriši
 			</a>
 		</div>
 	% else:

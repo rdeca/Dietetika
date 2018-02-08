@@ -9,7 +9,7 @@
 	<table class="table table-striped">
 		<thead>
 		  <tr>
-			<th>Consumable type</th>
+			<th>Tip živila</th>
 			<th></th>
 			<th></th>
 		  </tr>
@@ -17,22 +17,20 @@
 		<tbody>
 			% for c in consumable_types:
 				<tr>
-					<td style='width: 50%;'>
+					<td style='width: 80%;'>
 						<a href='/consumable-type/{{c["id"]}}'>
 							{{c['title']}}
 						</a>
 					</td>
-					<td style='width: 50%;'>
-						{{c['title']}}
-					</td>
+
 					<td class='manipulation-btns'>
 						<a class='btn btn-info' href='/consumable-type-edit/{{c["id"]}}'>
-							<span class="glyphicon glyphicon-pencil"></span> Edit
+							<span class="glyphicon glyphicon-pencil"></span> Uredi
 						</a>
 					</td>
 					<td class='manipulation-btns'>
 						<a class='btn btn-danger' href='/consumable-type-delete/{{c["id"]}}'>
-							<span class="glyphicon glyphicon-trash"></span> Delete
+							<span class="glyphicon glyphicon-trash"></span> Izbriši
 						</a>
 					</td>
 				</tr>

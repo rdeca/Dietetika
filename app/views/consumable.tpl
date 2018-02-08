@@ -18,7 +18,7 @@
 				% end
 
 				<div class="form-group">
-					<label for="title">Consumable title:</label>
+					<label for="title">Živilo:</label>
 					<input type="text" class="form-control" id="title"
 					% if (c and c['title']):
 					value = '{{c["title"]}}'
@@ -27,7 +27,7 @@
 					<div class="help-block with-errors alert alert-danger"></div>
 				</div>
 				<div class="form-group">
-					<label for="consumable_type">Consumable type:</label>
+					<label for="consumable_type">Tip Živila:</label>
 					<select name="consumable_type_select" id="consumable_type_select" required data-required-error='Izberite eno izmed izbir' class='form-control'>
 						% for con_type in ct:
 						<option value="{{con_type['id']}}" 
@@ -40,7 +40,7 @@
 					<div class="help-block with-errors alert alert-danger"></div>
 				</div>
 				<div class="form-group">
-					<label for="calories">Calories:</label>
+					<label for="calories">Kalorije:</label>
 					<input type="text" class="form-control" pattern='^[0-9][\d\.]+'data-pattern-error='Neveljavni znaki v polju' required data-required-error='Obvezno polje'id="calories" 
 					% if (c and c['calories']):
 					value='{{c["calories"]}}'
@@ -50,7 +50,7 @@
 				</div>
 				<div class="form-group">
 					<div id="consumable_nutrients_table_wrapper" class='hidden'>
-						<label for="calories">Nutrients:</label>
+						<label for="calories">Hranilne Vrednosti:</label>
 						<table id="consumable_nutrients_table" class='table table-striped'
 						% if (cn is not None):
 							data-consumable-nutrients='{{cn}}'
@@ -58,10 +58,10 @@
 						>
 							<thead>
 								<th>
-									Nutrient
+									Tip
 								</th>
 								<th>
-									Value
+									g/100 g
 								</th>
 								<th>
 									
@@ -75,7 +75,7 @@
 					
 					<br>
 					<div class="form-group">
-						<label for="add_nutrient" class='form-label'>Add nutrient:</label>
+						<label for="add_nutrient" class='form-label'>Dodaj vrednost:</label>
 						<div id='add-nutrient-to-consumable-wrapper'>
 							<select name="nutrient" id="nutrient" class='form-control limit-width'>
 								% for nutrient in n:
@@ -88,7 +88,7 @@
 						</div>
 					</div>
 				</div>
-				<button type="submit" class="btn btn-default">Submit</button>
+				<button type="submit" class="btn btn-default">Shrani</button>
 			</form>
 		</div>
 	</div>

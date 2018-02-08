@@ -36,10 +36,10 @@
 	<table class="table table-striped">
 		<thead>
 		  <tr>
-			<th>Consumable</th>
-			<th>Consumable type</th>
-			<th>Calories</th>
-			<th>Nutrients</th>
+			<th>Živilo</th>
+			<th>Tip živila</th>
+			<th>Kalorije</th>
+			<th>Vrednosti</th>
 		  </tr>
 		</thead>
 		<tbody>

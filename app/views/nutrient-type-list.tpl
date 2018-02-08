@@ -9,7 +9,7 @@
 	<table class="table table-striped">
 		<thead>
 		  <tr>
-			<th>Nutrient type</th>
+			<th>Tip Hranila</th>
 			<th></th>
 			<th></th>
 		  </tr>
@@ -17,22 +17,19 @@
 		<tbody>
 			% for nt in nutrient_types:
 				<tr>
-					<td style='width: 50%;'>
+					<td style='width: 90%;'>
 						<a href='/nutrient-type/{{nt["id"]}}'>
 							{{nt['title']}}
 						</a>
 					</td>
-					<td style='width: 50%;'>
-						{{nt['title']}}
-					</td>
 					<td class='manipulation-btns'>
 						<a class='btn btn-info' href='/nutrient-type-edit/{{nt["id"]}}'>
-							<span class="glyphicon glyphicon-pencil"></span> Edit
+							<span class="glyphicon glyphicon-pencil"></span> Uredi
 						</a>
 					</td>
 					<td class='manipulation-btns'>
 						<a class='btn btn-danger' href='/nutrient-type-delete/{{nt["id"]}}'>
-							<span class="glyphicon glyphicon-trash"></span> Delete
+							<span class="glyphicon glyphicon-trash"></span> Izbriši
 						</a>
 					</td>
 				</tr>

@@ -8,18 +8,18 @@
 	</div>
 	% if n:
 		<dl>
-			<dt>Title</dt>
+			<dt>Hranilo</dt>
 			<dd>{{n['title']}}</dd>
-			<dt>Nutrient type</dt>
+			<dt>Mikro/Makro</dt>
 			<dd>{{n['nutrient_type_title']}}</dd>
 		</dl>
 		<div class="clearfix"></div>
 		<div class="entry-manipulation">
 			<a href="/nutrient-edit/{{n['id']}}" class="btn btn-primary">
-				<span class='glyphicon glyphicon-pencil'></span>Edit
+				<span class='glyphicon glyphicon-pencil'></span>Uredi
 			</a>
 			<a href="/nutrient-delete/{{n['id']}}" class="btn btn-danger">
-				<span class='glyphicon glyphicon-remove'></span>Delete
+				<span class='glyphicon glyphicon-remove'></span>Izbriši
 			</a>
 		</div>
 	% else:

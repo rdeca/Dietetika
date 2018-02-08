@@ -18,7 +18,7 @@
 				% end
 
 				<div class="form-group">
-					<label for="title">Consumable type:</label>
+					<label for="title">Tip živila:</label>
 					<input name="title" type="text" required data-required-error='Obvezno polje' pattern='[\w-]+'data-pattern-error='Neveljavni znaki v polju'  class="form-control" id="title"
 					% if (ct and ct['title']):
 					value = '{{ct["title"]}}'
@@ -26,7 +26,7 @@
 					>
 					<div class="help-block with-errors alert alert-danger"></div>
 				</div>
-				<button type="submit" class="btn btn-default">Submit</button>
+				<button type="submit" class="btn btn-default">Shrani</button>
 			</form>
 		</div>
 	</div>

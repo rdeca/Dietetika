@@ -8,16 +8,16 @@
 	</div>
 	% if ct:
 		<dl>
-			<dt>Title</dt>
+			<dt>Tip</dt>
 			<dd>{{ct['title']}}</dd>
 		</dl>
 		<div class="clearfix"></div>
 		<div class="entry-manipulation">
 			<a href="/consumable-type-edit/{{ct['id']}}" class="btn btn-primary">
-				<span class='glyphicon glyphicon-pencil'></span>Edit
+				<span class='glyphicon glyphicon-pencil'></span>Uredi
 			</a>
 			<a href="/consumable-type-delete/{{ct['id']}}" class="btn btn-danger">
-				<span class='glyphicon glyphicon-remove'></span>Delete
+				<span class='glyphicon glyphicon-remove'></span>Izbriši
 			</a>
 		</div>
 	% else:

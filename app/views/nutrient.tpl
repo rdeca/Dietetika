@@ -18,7 +18,7 @@
 				% end
 
 				<div class="form-group">
-					<label for="title">Nutrient title:</label>
+					<label for="title">Hranilna Vrednost:</label>
 					<input name="title" type="text" class="form-control" id="title"
 					% if (n and n['title']):
 					value = '{{n["title"]}}'
@@ -28,7 +28,7 @@
 
 				</div>
 				<div class="form-group">
-					<label for="nutrient_type">Nutrient type:</label>
+					<label for="nutrient_type">Tip:</label>
 					<select name="nutrient_type_id" data-required data-required-error='Izberite eno izmed izbir' id="nutrient_type_id" class='form-control'>
 						% for nut_type in nt:
 						<option value="{{nut_type['id']}}" 
@@ -41,7 +41,7 @@
 					<div class="help-block with-errors alert alert-danger"></div>
 
 				</div>
-				<button type="submit" class="btn btn-default">Submit</button>
+				<button type="submit" class="btn btn-default">Shrani</button>
 			</form>
 		</div>
 	</div>
