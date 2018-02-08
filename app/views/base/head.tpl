@@ -1,4 +1,10 @@
 <head>
+<link href='https://fonts.googleapis.com/css?family=Amatic SC' rel='stylesheet'>
+<style>
+body {
+    font-family: 'Amatic SC';font-size: 22px;
+}
+</style>
 	<title>Dietetika</title>
 
 	<link href='/css/bootstrap.min.css' rel='stylesheet'>
