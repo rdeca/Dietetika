@@ -30,15 +30,18 @@ def js(filename):
 # routing
 @app.route('/')
 def index():
-	return template("entry.tpl")
+	redirect ('/entry')
 
+@app.route('/entry')
+def domov():
+    
 @app.route('/consumables')
 def consumables(db):
 
-	is_ajax = request.query.isAjax
+	is_ajax = request.query.isAjax # komunicira s strežnikom, ne rabimo refreshat
 
-	if is_ajax == '1':
-		query = request.query.query
+	if is_ajax == '1': #če je ena vrne podatek autocomplete
+		query = request.query.query #kar smo napisali v okno
 
 		q = """SELECT id, title 
 				FROM consumable 
@@ -48,12 +51,12 @@ def consumables(db):
 		c = db.execute(q, {'title': title_string})
 		results = c.fetchall()
 
-		results_dict = [x['title'] for x in results]
+		results_dict = [x['title'] for x in results] #json prebere
 
 		returned_dict = {'suggestions': results_dict}
 
 		return json.dumps(returned_dict)
-	else:
+	else: #vrne stran
 		#uporaben ko so posredovani search parameteri
 		query_dict = {}
 
@@ -70,11 +73,11 @@ def consumables(db):
 				LEFT JOIN consumable_has_nutrient chn ON (chn.consumable_id = c.id) 
 			WHERE 1 """
 
-		if title:
+		if title: #če smo kej zapisali v search
 			title_string = "%{title}%".format(title=title)
 			query_dict['title'] = title_string
 			q += " AND c.title LIKE :title "
-		if consumable_type_id:
+		if consumable_type_id: #iščemo tip
 			query_dict['consumable_type_id'] = consumable_type_id
 			q += " AND c.consumable_type_id = :consumable_type_id "
 
@@ -92,7 +95,7 @@ def consumables(db):
 
 
 	
-@app.route('/consumable/<consumable_id>')
+@app.route('/consumable/<consumable_id>') #<> obvezen parameter
 def consumable(consumable_id, db):
 	q = """SELECT c.id, 
 					c.title,
@@ -119,8 +122,8 @@ def consumable(consumable_id, db):
 def consumable_delete(id, db):
 	q = "DELETE FROM consumable WHERE id = ? "
 	c = db.execute(q)
-	if c.rowcount == 1:
-		redirect('/consumables', id)
+	if c.rowcount == 1: #koliko vrstic se je spremenilo
+		redirect('/consumables')
 	else:
 		redirect('/consumable/{id}'.format(id=id))
 
@@ -216,7 +219,7 @@ def consumable_edit(id, db):
 def consumable_enter(db):
 	# db manipulation gets through ajax
 	# this is just to show template
-	modify_type = 'enter'
+	modify_type = 'enter' #zapis v html je data- modity_type za enter in edit je isti template
 
 	# consumable types
 	q = """SELECT * 
@@ -230,14 +233,14 @@ def consumable_enter(db):
 	c = db.execute(q)
 	nutrients = c.fetchall()
 
-	consumable_nutrients = None
+	consumable_nutrients = None #tuki še ne obstaja
 	consumable = None
 
 	return template('consumable.tpl', modify_type = modify_type, ct = consumable_types, n = nutrients, cn = consumable_nutrients, c = consumable)
 
 # ajax create
 @app.route('/consumable-enter', method = 'POST')
-def consumable_enter_post(db):
+def consumable_enter_post(db): #dietetika js
 
 	try:
 		req_json = request.json
@@ -252,7 +255,7 @@ def consumable_enter_post(db):
 		if(c.rowcount > 0):
 
 			# consumable id
-			consumable_id = c.lastrowid
+			consumable_id = c.lastrowid #zadnji vnešeni
 
 			# 2. add nutriens if exist
 			if(req_json['nutrients'] and len(req_json['nutrients']) > 0):
@@ -261,13 +264,13 @@ def consumable_enter_post(db):
 					q = """INSERT INTO consumable_has_nutrient (consumable_id, nutrient_id, value) 
 						VALUES (?, ?, ?)"""
 					db.execute(q, (consumable_id, nutrient['id'], nutrient['value']))
-				c = db.execute("COMMIT")
-				return json.dumps("Consumable successfully created")
+				c = db.execute("COMMIT") #potrdi spremembe v bazi
+				return json.dumps("Consumable successfully created") #json ve da je success 200(je redirect) je ustrezen status, sicer 400(napačna pot na server)
 	except db.Error:
 		e = sys.exc_info()[0]
-		db.execute('ROLLBACK')
-		response.status = 500
-		return e
+		db.execute('ROLLBACK') #skensli vse kar je do zdej vnešeno
+		response.status = 500 #napaka na serverju
+		return e #console error
 	except:
 		e = sys.exc_info()[0]
 		response.status = 500
@@ -321,16 +324,16 @@ def nutrient_delete(id, db):
 @app.route('/nutrient-enter')
 def nutrient_enter(db):
 
-	q = """SELECT * FROM nutrient_type;"""
+	q = """SELECT * FROM nutrient_type;""" #pokažemo v dropdownu
 	c = db.execute(q)
 	nutrient_types = c.fetchall()
 
 	return template('nutrient.tpl', nt = nutrient_types, n = None)
 
-@app.route('/nutrient-enter', method='POST')
+@app.route('/nutrient-enter', method='POST') #isto kot app.post je na isti strani
 def nutrient_enter_post(db):
 
-	title = request.forms.get('title')
+	title = request.forms.get('title') #glede na name
 	nutrient_type_id = request.forms.get('nutrient_type_id')
 
 	q = """INSERT INTO nutrient (title, nutrient_type_id) VALUES (?, ?);"""
@@ -340,7 +343,7 @@ def nutrient_enter_post(db):
 	# TODO: if err
 
 @app.route('/nutrient-edit/<id>')
-def nutrient_edit(id, db):
+def nutrient_edit(id, db): #id rabimo da iščemo v bazi
 
 	#nutrient details
 	q = """SELECT * FROM nutrient WHERE id = ?; """
@@ -473,5 +476,5 @@ def nutrient_type_delete(id, db):
 	if (c.rowcount > 0):
 		redirect('/nutrient-types')
 
-debug(True)
+debug(True) #piše errorje
 run(app, host='localhost', port=8080, reloader=True)
