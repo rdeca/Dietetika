@@ -16,6 +16,8 @@ $(document).ready(function(){
 	setFilterByConsumableType();
 
 	getSearchParametersOnConsumables();
+	
+	showHideGrowlMessage();
 
 	// bind add nutrient to consumable
 	$("#add-nutrient-to-consumable").on("click", function(ev){
@@ -42,6 +44,7 @@ $(document).ready(function(){
 			};
 			var tableRow = createNutrientsTableRow(nutrient);
 			$nutrientTable.find("tbody").append(tableRow);
+			//shranjujem tuple vrednosti
 			consumableNutrients.push(nutrient);
 
 			//reset vals
@@ -89,7 +92,7 @@ $(document).ready(function(){
 
 	// MAIN FUNCTION FOR POSTING FORM
 	$consumableForm.on("submit", function(ev){
-		ev.preventDefault();
+		ev.preventDefault(); // ne gre na server
 
 		var $errorsWrapper = $("#errors-wrapper");
 		var $titleInput = $consumableForm.find("#title");
@@ -223,6 +226,19 @@ $(document).ready(function(){
 				$(this).closest('form').submit();
 			}
 		})
+	}
+	function showHideGrowlMessage() {
+		var searchParams = new URLSearchParams(window.location.search)
+		var changes = searchParams.get('changes');
+		if (changes) {
+			// nekaj se je zgodilo - create/update/delete
+			var messageBox = $("#"+changes);
+			messageBox.fadeIn();
+			setTimeout(function() {
+				messageBox.fadeOut();
+			}, 1500);
+
+		}
 	}
 
 });

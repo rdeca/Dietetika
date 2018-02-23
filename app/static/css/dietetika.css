@@ -3,7 +3,7 @@
 	padding-bottom: 25px;
 }
 
-footer, header{
+footer{
 	padding: 30px 15px;
 }
 
@@ -63,3 +63,29 @@ body {
 .search-wrapper row{font-size: 22px; }
 thead{font-size: 25px; }
 tbody{font-size: 22px; }
+
+.position-message {
+	position: fixed;
+	top: 15px;
+	right: 15px;
+	border-radius: 4px;
+	box-shadow: 0px 0px 2px black;
+	display:none;
+}
+.position-message.success {
+	background-color: #4CFF4C;
+}
+.display-table{
+	display: table;
+	padding: 15px;
+}
+.table-cell {
+	display: table-cell;
+	padding: 5px;
+}
+.table-cell.vertical-middle {
+	vertical-align: middle;
+}
+.table-cell .fa {
+	font-size: 2rem;
+}

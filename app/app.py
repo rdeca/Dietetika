@@ -34,6 +34,7 @@ def index():
 
 @app.route('/entry')
 def domov():
+	return template('index.tpl')
     
 @app.route('/consumables')
 def consumables(db):
@@ -91,7 +92,7 @@ def consumables(db):
 		c = db.execute(q)
 		consumable_types = c.fetchall()
 
-		return template("consumables-list.tpl", consumables = r_consumables, consumable_types = consumable_types)
+		return template("consumables-list.tpl", consumables = r_consumables, consumable_types = consumable_types, status_text = None)
 
 
 	
@@ -123,7 +124,7 @@ def consumable_delete(id, db):
 	q = "DELETE FROM consumable WHERE id = ? "
 	c = db.execute(q)
 	if c.rowcount == 1: #koliko vrstic se je spremenilo
-		redirect('/consumables')
+		redirect('/consumables?changes=deleted')
 	else:
 		redirect('/consumable/{id}'.format(id=id))
 
@@ -204,7 +205,7 @@ def consumable_edit(id, db):
 		q = """DELETE FROM consumable_has_nutrient WHERE consumable_id = ? AND nutrient_id NOT IN (%s)""" % ("?," * len(valid_nutrient_ids))[:-1]
 		valid_nutrient_ids.insert(0, id)
 		c = db.execute(q, valid_nutrient_ids)
-		return json.dumps('Consumable successfully updated.')
+		return json.dumps('Živilo uspešno posodobljeno.')
 	except db.Error:
 		e = sys.exc_info()[0]
 		db.execute('ROLLBACK')
@@ -264,8 +265,8 @@ def consumable_enter_post(db): #dietetika js
 					q = """INSERT INTO consumable_has_nutrient (consumable_id, nutrient_id, value) 
 						VALUES (?, ?, ?)"""
 					db.execute(q, (consumable_id, nutrient['id'], nutrient['value']))
-				c = db.execute("COMMIT") #potrdi spremembe v bazi
-				return json.dumps("Consumable successfully created") #json ve da je success 200(je redirect) je ustrezen status, sicer 400(napačna pot na server)
+				c = db.execute("COMMIT")
+				return json.dumps("Živilo uspešno ustvarjeno.")
 	except db.Error:
 		e = sys.exc_info()[0]
 		db.execute('ROLLBACK') #skensli vse kar je do zdej vnešeno
@@ -318,7 +319,7 @@ def nutrient_details(id, db):
 def nutrient_delete(id, db):
 	q = """DELETE FROM nutrient WHERE id = ?"""
 	db.execute(q, id)
-	redirect('/nutrients')
+	redirect('/nutrients?changes=deleted')
 
 
 @app.route('/nutrient-enter')
@@ -339,7 +340,7 @@ def nutrient_enter_post(db):
 	q = """INSERT INTO nutrient (title, nutrient_type_id) VALUES (?, ?);"""
 	c = db.execute(q, (title, nutrient_type_id))
 	if (c.rowcount > 0):
-		redirect('/nutrients')
+		redirect('/nutrients?changes=saved')
 	# TODO: if err
 
 @app.route('/nutrient-edit/<id>')
@@ -367,7 +368,7 @@ def nutrient_edit_post(id, db):
 	c = db.execute(q, {'title': title, 'n_type_id': nutrient_type_id, 'id': id})
 
 	if (c.rowcount > 0):
-		redirect('/nutrients')
+		redirect('/nutrients?changes=updated')
 	#TODO: if err
 
 @app.route('/consumable-types')
@@ -385,7 +386,7 @@ def consumable_types_delete(id, db):
 	c = db.execute(q, {'id': id})
 
 	if (c.rowcount > 0):
-		redirect('/consumable-types')
+		redirect('/consumable-types?changes=deleted')
 
 @app.route('/consumable-type/<id>')
 def consumable_types_details(id, db):
@@ -410,7 +411,7 @@ def consumable_types_edit_post(id, db):
 	q = """UPDATE consumable_type SET title = :title WHERE id = :id;"""
 	c = db.execute(q, {'title': title, 'id': id})
 	if (c.rowcount > 0):
-		redirect('/consumable-types')
+		redirect('/consumable-types?changes=updated')
 	#TODO: handle errs
 
 @app.route('/consumable-type-enter')
@@ -424,7 +425,7 @@ def consumable_types_enter_post(db):
 	c = db.execute(q, {'title': consumable_type})
 
 	if (c.rowcount > 0):
-		redirect('/consumable-types')
+		redirect('/consumable-types?changes=created')
 	#TODO: err handle
 
 @app.route('/nutrient-types')
@@ -444,7 +445,7 @@ def nutrient_types_enter_post(db):
 	q = """INSERT INTO nutrient_type (title) VALUES (:title);"""
 	c = db.execute(q, {'title': title})
 	if (c.rowcount > 0):
-		redirect('/nutrient-types')
+		redirect('/nutrient-types?changes=created')
 	#TODO: err handle
 
 @app.route('/nutrient-type-edit/<id>')
@@ -460,7 +461,7 @@ def nutrient_types_edit_post(id, db):
 	q = """UPDATE nutrient_type SET title=:title WHERE id=:id;"""
 	c = db.execute(q, {'title': title, 'id':id})
 	if (c.rowcount>0):
-		redirect('/nutrient-types')
+		redirect('/nutrient-types?changes=updated')
 
 @app.route('/nutrient-type/<id>')
 def nutrient_type(id, db):
@@ -474,7 +475,7 @@ def nutrient_type_delete(id, db):
 	q = "DELETE FROM nutrient_type WHERE id=:id;"
 	c = db.execute(q, {'id': id})
 	if (c.rowcount > 0):
-		redirect('/nutrient-types')
+		redirect('/nutrient-types?changes=deleted')
 
 debug(True) #piše errorje
 run(app, host='localhost', port=8080, reloader=True)
