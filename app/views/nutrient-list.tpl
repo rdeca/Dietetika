@@ -2,7 +2,7 @@
 %include('./base/growl.tpl')
 <div class="container main-content">
 	<div class="anchors text-right">
-		<a class='btn btn-primary' href='/nutrient-enter'>Vnesi novega</a>
+		<a class='btn btn-primary' href='/nutrients-enter'>Vnesi novega</a>
 		<hr>
 	</div>
 	% if (len(nutrients) != 0):

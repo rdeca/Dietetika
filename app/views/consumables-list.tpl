@@ -3,7 +3,7 @@
 <div class="container main-content">
 
 	<div class="anchors text-right">
-		<a class='btn btn-primary' href='/consumable-enter'>Vnesi novega</a>
+		<a class='btn btn-primary' href='/consumables-enter'>Vnesi novega</a>
 		<hr>
 	</div>
 	

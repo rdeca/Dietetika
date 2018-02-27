@@ -1,8 +1,8 @@
-$(document).ready(function(){
+$(document).ready(function () {
 
 	var consumableNutrients = [];
-	var $nutrientTable = $("#consumable_nutrients_table"); 
-	var $nutrientTableWrapper = $nutrientTable.closest("#consumable_nutrients_table_wrapper"); 
+	var $nutrientTable = $("#consumable_nutrients_table");
+	var $nutrientTableWrapper = $nutrientTable.closest("#consumable_nutrients_table_wrapper");
 	var $consumableForm = $("#consumable-modify");
 	var $modifyType = $consumableForm.attr('data-modify-type');
 	var consumableId = $("#consumable_id").val();
@@ -16,11 +16,11 @@ $(document).ready(function(){
 	setFilterByConsumableType();
 
 	getSearchParametersOnConsumables();
-	
+
 	showHideGrowlMessage();
 
 	// bind add nutrient to consumable
-	$("#add-nutrient-to-consumable").on("click", function(ev){
+	$("#add-nutrient-to-consumable").on("click", function (ev) {
 		ev.preventDefault();
 
 		//elements
@@ -33,7 +33,7 @@ $(document).ready(function(){
 		// find data
 		var nutrientId = $nutrientSelect.val();
 		var nutrientValue = $nutrientValueInput.val();
-		var nutrientTitle = $nutrientSelect.find('option[value="'+nutrientId+'"]').text();
+		var nutrientTitle = $nutrientSelect.find('option[value="' + nutrientId + '"]').text();
 
 		// check that both options were selected
 		if (nutrientId != -1 && nutrientValue) {
@@ -52,20 +52,20 @@ $(document).ready(function(){
 			$nutrientValueInput.val('');
 
 			hideShowTable($nutrientTableWrapper);
-			
+
 		} else {
 			//TODO: show err that stuff needs to be selected
 		}
 	});
 
 	//bind remove nutrient
-	$("#consumable_nutrients_table").on("click", "button[data-remove-nutrient]", function(ev){
+	$("#consumable_nutrients_table").on("click", "button[data-remove-nutrient]", function (ev) {
 		ev.preventDefault();
 
 		var nutrientId = $(this).attr("data-remove-nutrient");
-		
+
 		//remove nutrient row
-		$("[data-remove-nutrient='"+nutrientId+"']").closest('tr').remove();
+		$("[data-remove-nutrient='" + nutrientId + "']").closest('tr').remove();
 
 		//remove from array
 		var nutrientIndex = consumableNutrients.indexOf(nutrientId);
@@ -80,18 +80,18 @@ $(document).ready(function(){
 	if (existingNutrients) {
 		var json = JSON.parse(existingNutrients);
 		var row;
-		for (var i = 0; i<json.length; i++) {
+		for (var i = 0; i < json.length; i++) {
 			row = createNutrientsTableRow(json[i]);
 			consumableNutrients.push(json[i]);
 			$nutrientTable.find("tbody").append(row);
 		}
-		
+
 		hideShowTable($nutrientTableWrapper);
 	}
 
 
 	// MAIN FUNCTION FOR POSTING FORM
-	$consumableForm.on("submit", function(ev){
+	$consumableForm.on("submit", function (ev) {
 		ev.preventDefault(); // ne gre na server
 
 		var $errorsWrapper = $("#errors-wrapper");
@@ -114,7 +114,7 @@ $(document).ready(function(){
 			//TODO: add err wrapper and add field to insert title
 			errors += "<li>Manjka ime izdelka.</li>";
 		}
-		if (consumableType == -1){
+		if (consumableType == -1) {
 			errors += "<li>Manjka tip izdelka</li>";
 		}
 		if (!calories) {
@@ -137,34 +137,34 @@ $(document).ready(function(){
 		};
 
 		// consumable path
-		var postUrl = "/consumable-enter";
+		var postUrl = "/consumables-enter";
 		if ($modifyType == 'edit') {
-			postUrl = "/consumable-edit/"+consumableId
+			postUrl = "/consumable-edit/" + consumableId
 		}
-		
+
 		$.ajax({
 			type: "POST",
 			url: postUrl,
 			contentType: "application/json",
-        	dataType: "json",
+			dataType: "json",
 			data: JSON.stringify(consumableJson),
-			success: function(data, status, xhr) {
+			success: function (data, status, xhr) {
 				if (xhr.status == 200) {
 					window.location.href = "/consumables";
 				}
 			},
-			error: function(xhr, status, error) {
+			error: function (xhr, status, error) {
 				// handle error
 				console.error(error);
 			}
 		});
 	});
 
-	function createNutrientsTableRow(nutrient){
+	function createNutrientsTableRow(nutrient) {
 		var row = "<tr data-id='" + nutrient.id + "'>";
 		row += "<td>" + nutrient.title + "</td>";
 		row += "<td>" + nutrient.value + "</td>";
-		row += "<td><button type='button' class='btn btn-danger glyphicon glyphicon-trash' data-remove-nutrient='"+nutrient.id+"'></button></td>";
+		row += "<td><button type='button' class='btn btn-danger glyphicon glyphicon-trash' data-remove-nutrient='" + nutrient.id + "'></button></td>";
 		row += "</tr>";
 
 		return row;
@@ -178,15 +178,16 @@ $(document).ready(function(){
 		}
 	}
 
-	function manipulateSelectPristine(){
+	function manipulateSelectPristine() {
 		$("select").attr('data-pristine', true);
-		$("select").on("change", function(){
+		$("select").on("change", function () {
 			$(this).removeAttr('data-pristine');
 		})
 	}
+
 	function setFormBootstrapValidator() {
 		$('form').validator({
-			
+
 		});
 	}
 
@@ -202,39 +203,50 @@ $(document).ready(function(){
 			$("#consumable_type_select").val(consumableType);
 		}
 	}
-	function setActiveNavigation(){
-			var url = window.location.pathname;
+
+	function setActiveNavigation() {
+		var url = window.location.pathname;
+
+		if (url.endsWith('-enter')) {
+			url = url.replace('-enter', '');
+		}
+
 		// Will only work if string in href matches with location
-			$('ul.nav a[href="' + url + '"]').parent().addClass('active');
-	
+		$('ul.nav a[href="' + url + '"]').parent().addClass('active');
+
 		// Will also work for relative and absolute hrefs
-			$('ul.nav a').filter(function () {
-				return this.href == url;
-			}).parent().addClass('active').parent().parent().addClass('active');
+		$('ul.nav a').filter(function () {
+			return this.href == url;
+		}).parent().addClass('active').parent().parent().addClass('active');
 	}
 
 	function setAutoComplete() {
 		// consumables
+		$("#entry-search input[type='text']").autocomplete({
+			serviceUrl: '/consumables?isAjax=1'
+		});
 		$("#search-consumable-title #title").autocomplete({
 			serviceUrl: '/consumables?isAjax=1'
 		});
 	}
+
 	function setFilterByConsumableType() {
-		$("#consumable_type_select").on("change", function(){
+		$("#consumable_type_select").on("change", function () {
 			var selected = $(this).val();
 			if (selected != -1) {
 				$(this).closest('form').submit();
 			}
 		})
 	}
+
 	function showHideGrowlMessage() {
 		var searchParams = new URLSearchParams(window.location.search)
 		var changes = searchParams.get('changes');
 		if (changes) {
 			// nekaj se je zgodilo - create/update/delete
-			var messageBox = $("#"+changes);
+			var messageBox = $("#" + changes);
 			messageBox.fadeIn();
-			setTimeout(function() {
+			setTimeout(function () {
 				messageBox.fadeOut();
 			}, 1500);
 

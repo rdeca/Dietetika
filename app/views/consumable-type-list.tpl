@@ -2,7 +2,7 @@
 %include('./base/growl.tpl')
 <div class="container main-content">
 	<div class="anchors text-right">
-		<a class='btn btn-primary' href='/consumable-type-enter'>Vnesi novega</a>
+		<a class='btn btn-primary' href='/consumable-types-enter'>Vnesi novega</a>
 		<hr>
 	</div>
 	% if (len(consumable_types) != 0):

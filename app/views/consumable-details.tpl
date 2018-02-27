@@ -21,9 +21,9 @@
 					% for nutrient in n:
 					<li>
 						<dl>
-							<dd>
+							<dt>
 								{{nutrient['title']}}
-							</dd>
+							</dt>
 							<dd>
 								{{nutrient['value']}}
 							</dd>

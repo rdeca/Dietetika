@@ -30,11 +30,11 @@ def js(filename):
 # routing
 @app.route('/')
 def index():
-	redirect ('/entry')
+	return template('index.tpl')
 
 @app.route('/entry')
 def domov():
-	return template('index.tpl')
+	redirect('/')
     
 @app.route('/consumables')
 def consumables(db):
@@ -216,7 +216,7 @@ def consumable_edit(id, db):
 		response.status = 500
 		return e
 
-@app.route('/consumable-enter')
+@app.route('/consumables-enter')
 def consumable_enter(db):
 	# db manipulation gets through ajax
 	# this is just to show template
@@ -240,7 +240,7 @@ def consumable_enter(db):
 	return template('consumable.tpl', modify_type = modify_type, ct = consumable_types, n = nutrients, cn = consumable_nutrients, c = consumable)
 
 # ajax create
-@app.route('/consumable-enter', method = 'POST')
+@app.route('/consumables-enter', method = 'POST')
 def consumable_enter_post(db): #dietetika js
 
 	try:
@@ -322,7 +322,7 @@ def nutrient_delete(id, db):
 	redirect('/nutrients?changes=deleted')
 
 
-@app.route('/nutrient-enter')
+@app.route('/nutrients-enter')
 def nutrient_enter(db):
 
 	q = """SELECT * FROM nutrient_type;""" #pokažemo v dropdownu
@@ -331,7 +331,7 @@ def nutrient_enter(db):
 
 	return template('nutrient.tpl', nt = nutrient_types, n = None)
 
-@app.route('/nutrient-enter', method='POST') #isto kot app.post je na isti strani
+@app.route('/nutrients-enter', method='POST') #isto kot app.post je na isti strani
 def nutrient_enter_post(db):
 
 	title = request.forms.get('title') #glede na name
@@ -414,11 +414,11 @@ def consumable_types_edit_post(id, db):
 		redirect('/consumable-types?changes=updated')
 	#TODO: handle errs
 
-@app.route('/consumable-type-enter')
+@app.route('/consumable-types-enter')
 def consumable_types_enter(db):
 	return template('consumable-types.tpl', ct = None)
 
-@app.route('/consumable-type-enter', method='POST')
+@app.route('/consumable-types-enter', method='POST')
 def consumable_types_enter_post(db):
 	consumable_type = request.forms.get('title')
 	q = """INSERT INTO consumable_type (title) VALUES (:title);"""
@@ -435,11 +435,11 @@ def nutrient_types(db):
 	nutrient_types = c.fetchall()
 	return template('nutrient-type-list.tpl', nutrient_types = nutrient_types)
 
-@app.route('/nutrient-type-enter')
+@app.route('/nutrient-types-enter')
 def nutrient_types_enter(db):
 	return template('nutrient-type.tpl', nt = None)
 
-@app.route('/nutrient-type-enter', method='POST')
+@app.route('/nutrient-types-enter', method='POST')
 def nutrient_types_enter_post(db):
 	title = request.forms.get('title')
 	q = """INSERT INTO nutrient_type (title) VALUES (:title);"""
