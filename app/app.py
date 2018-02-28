@@ -106,7 +106,7 @@ def consumable(consumable_id, db):
 				FROM consumable c 
 				LEFT JOIN consumable_type ct ON (c.consumable_type_id = ct.id) 
 				WHERE c.id = ?"""
-	c = db.execute(q, consumable_id)
+	c = db.execute(q, (consumable_id,))
 	consumable = c.fetchone()
 	q_nutrients = """SELECT n.id,
 							n.title,
@@ -116,7 +116,7 @@ def consumable(consumable_id, db):
 							LEFT JOIN nutrient n ON (chn.nutrient_id = n.id)
 							LEFT JOIN nutrient_type nt ON (n.nutrient_type_id = nt.id)
 						WHERE chn.consumable_id = ? """
-	c = db.execute(q_nutrients, consumable_id)
+	c = db.execute(q_nutrients, (consumable_id,))
 	nutrients = c.fetchall()
 	return template("consumable-details.tpl", c = consumable, n = nutrients)
 
@@ -124,7 +124,7 @@ def consumable(consumable_id, db):
 @app.route('/consumable-delete/<id>')
 def consumable_delete(id, db):
 	q = "DELETE FROM consumable WHERE id = ? "
-	c = db.execute(q)
+	c = db.execute(q,(id,))
 	if c.rowcount == 1: #koliko vrstic se je spremenilo
 		redirect('/consumables?changes=deleted')
 	else:
@@ -157,7 +157,7 @@ def consumable_edit(id, db):
 					c.consumable_type_id  
 				FROM consumable c 
 				WHERE c.id = ? """
-	c = db.execute(q, id)
+	c = db.execute(q, (id,))
 	consumable = c.fetchone()
 	# consumable has nutrients
 
@@ -167,7 +167,7 @@ def consumable_edit(id, db):
 			FROM consumable_has_nutrient chn 
 				LEFT JOIN nutrient n ON (chn.nutrient_id = n.id)
 			WHERE chn.consumable_id = ? """
-	c = db.execute(q, id)
+	c = db.execute(q, (id,))
 	consumable_nutrients = c.fetchall()
 	consumable_nutrients = json.dumps([dict(x) for x in consumable_nutrients])
 	return template('consumable.tpl', modify_type = modify_type, ct = consumable_types, n = nutrients, cn = consumable_nutrients, c = consumable)
@@ -315,7 +315,7 @@ def nutrient_details(id, db):
 					LEFT JOIN nutrient_type nt ON (n.nutrient_type_id = nt.id) 
 				WHERE n.id = ?"""
 	
-	c = db.execute(q, id)
+	c = db.execute(q, (id,))
 	nutrient = c.fetchone()
 
 	return template('nutrient-details.tpl', n = nutrient)
@@ -324,7 +324,7 @@ def nutrient_details(id, db):
 @app.route('/nutrient-delete/<id>')
 def nutrient_delete(id, db):
 	q = """DELETE FROM nutrient WHERE id = ?"""
-	db.execute(q, id)
+	db.execute(q, (id,))
 	redirect('/nutrients?changes=deleted')
 
 # prikaz vnostnih polj pri vnosu hranila
@@ -355,7 +355,7 @@ def nutrient_edit(id, db): #id rabimo da iščemo v bazi
 
 	#nutrient details
 	q = """SELECT * FROM nutrient WHERE id = ?; """
-	c = db.execute(q, id)
+	c = db.execute(q, (id,))
 	nutrient = c.fetchone()
 
 	#nutrient types
@@ -401,7 +401,7 @@ def consumable_types_delete(id, db):
 @app.route('/consumable-type/<id>')
 def consumable_types_details(id, db):
 	q = """SELECT * FROM consumable_type WHERE id = ?;"""
-	c = db.execute(q, id)
+	c = db.execute(q, (id,))
 	
 	consumable_type = c.fetchone()
 	return template('consumable-types-details.tpl', ct = consumable_type)	
