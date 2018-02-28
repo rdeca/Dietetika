@@ -1,5 +1,5 @@
 %include('./base/header.tpl')
-
+%include('./base/growl.tpl')
 <div class="container main-content">
 
 	<div class="anchors text-right">

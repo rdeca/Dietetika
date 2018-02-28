@@ -1,6 +1,8 @@
 $(document).ready(function () {
 
+	// ko vnasamo/urejamo zivila se tukaj shranjujejo posamezna hranila
 	var consumableNutrients = [];
+	// reference na elemente ki potrebujemo
 	var $nutrientTable = $("#consumable_nutrients_table");
 	var $nutrientTableWrapper = $nutrientTable.closest("#consumable_nutrients_table_wrapper");
 	var $consumableForm = $("#consumable-modify");
@@ -19,7 +21,7 @@ $(document).ready(function () {
 
 	showHideGrowlMessage();
 
-	// bind add nutrient to consumable
+	// dodajanje hranil zivilu
 	$("#add-nutrient-to-consumable").on("click", function (ev) {
 		ev.preventDefault();
 
@@ -30,12 +32,12 @@ $(document).ready(function () {
 		var $nutrientValueInput = $("#nutrient_value");
 
 
-		// find data
+		// poisci podatke
 		var nutrientId = $nutrientSelect.val();
 		var nutrientValue = $nutrientValueInput.val();
 		var nutrientTitle = $nutrientSelect.find('option[value="' + nutrientId + '"]').text();
 
-		// check that both options were selected
+		// izbrane morajo biti obe moznosti
 		if (nutrientId != -1 && nutrientValue) {
 			var nutrient = {
 				id: nutrientId,
@@ -53,29 +55,28 @@ $(document).ready(function () {
 
 			hideShowTable($nutrientTableWrapper);
 
-		} else {
-			//TODO: show err that stuff needs to be selected
-		}
+		} 
 	});
 
-	//bind remove nutrient
+	// klik na odstrani hranilo na ustvarjanju/urejanju zivil
 	$("#consumable_nutrients_table").on("click", "button[data-remove-nutrient]", function (ev) {
 		ev.preventDefault();
 
 		var nutrientId = $(this).attr("data-remove-nutrient");
 
-		//remove nutrient row
+		// odstrani vrstico v tabeli
 		$("[data-remove-nutrient='" + nutrientId + "']").closest('tr').remove();
 
-		//remove from array
+		// odstrani is seznama
 		var nutrientIndex = consumableNutrients.indexOf(nutrientId);
 		consumableNutrients.splice(nutrientIndex, 1);
 
 		hideShowTable($nutrientTableWrapper);
 	});
 
-	// check if on edit there are nutrients already appended
-	// so we need to fill the table
+	// pri urejanju moramo najprej preveriti ali hranila ze obstajajo
+	// te smo shranili v html attribute data-consumable-nutrients kot
+	// json string katerega potem spremenimo v object in pridobimo podatke
 	var existingNutrients = $($nutrientTable).attr('data-consumable-nutrients');
 	if (existingNutrients) {
 		var json = JSON.parse(existingNutrients);
@@ -90,7 +91,8 @@ $(document).ready(function () {
 	}
 
 
-	// MAIN FUNCTION FOR POSTING FORM
+	// glavna funkcija ki shranjuje spremembe na zivilih s pomocjo
+	// ajax
 	$consumableForm.on("submit", function (ev) {
 		ev.preventDefault(); // ne gre na server
 
@@ -104,14 +106,13 @@ $(document).ready(function () {
 		var calories = $caloriesInput.val();
 
 
-		// hide previous erros if exist
+		// odstrani napake ce obstajajo
 		$errorsWrapper.addClass("hidden");
 		$errorsWrapper.find("li").remove();
 
 		var errors = "";
 
 		if (!title) {
-			//TODO: add err wrapper and add field to insert title
 			errors += "<li>Manjka ime izdelka.</li>";
 		}
 		if (consumableType == -1) {
@@ -122,13 +123,14 @@ $(document).ready(function () {
 		}
 
 		if (!title || consumableType == -1 || !calories) {
-			// TODO: append errors to wrapper and show it
 			$errorsWrapper.find("ul").append(errors);
 			$errorsWrapper.removeClass("hidden");
 			return;
 		}
 
 		// consumable json
+		// podatki ki se posljejo na server v json obliki
+		// javastring object notation
 		var consumableJson = {
 			title: title,
 			consumable_type_id: consumableType,
@@ -142,6 +144,7 @@ $(document).ready(function () {
 			postUrl = "/consumable-edit/" + consumableId
 		}
 
+		// AJAX KLIC ki ustvari / posodobi zivila
 		$.ajax({
 			type: "POST",
 			url: postUrl,
@@ -150,7 +153,15 @@ $(document).ready(function () {
 			data: JSON.stringify(consumableJson),
 			success: function (data, status, xhr) {
 				if (xhr.status == 200) {
-					window.location.href = "/consumables";
+					// k redirectu je potrebno dodan query parameter
+					// da se prikaze "shranjeno" ali "posodobljeno"
+					var redirect = "/consumables";
+					if ($modifyType == 'edit') {
+						redirect += "?changes=updated";
+					} else if ($modifyType=="enter"){
+						redirect += "?changes=created";
+					}
+					window.location.href = redirect;
 				}
 			},
 			error: function (xhr, status, error) {
@@ -160,6 +171,8 @@ $(document).ready(function () {
 		});
 	});
 
+	// ustvari vrstico v tabeli pri prikazu hranil posameznega zivila
+	// ko se ustvarja ali posodablja zivilo
 	function createNutrientsTableRow(nutrient) {
 		var row = "<tr data-id='" + nutrient.id + "'>";
 		row += "<td>" + nutrient.title + "</td>";
@@ -170,6 +183,8 @@ $(document).ready(function () {
 		return row;
 	}
 
+	// prikaze tabelo hranil ce je ta prazna
+	// oziroma jo prikaze ce ni prazna
 	function hideShowTable($nutrientTableWrapper) {
 		if (consumableNutrients && consumableNutrients.length) {
 			$nutrientTableWrapper.removeClass('hidden');
@@ -185,12 +200,15 @@ $(document).ready(function () {
 		})
 	}
 
+	// bootstrap form validator
 	function setFormBootstrapValidator() {
 		$('form').validator({
 
 		});
 	}
 
+	// nastavi vsebine vnosnih polj za iskanje na /consumables
+	// glede na query parameter v urlju
 	function getSearchParametersOnConsumables() {
 		let searchParams = new URLSearchParams(window.location.search)
 		var title = searchParams.get('title');
@@ -204,6 +222,8 @@ $(document).ready(function () {
 		}
 	}
 
+	// nastavi active navbar povezavo glede na podstran na 
+	// kateri se nahajamo
 	function setActiveNavigation() {
 		var url = window.location.pathname;
 
@@ -220,6 +240,8 @@ $(document).ready(function () {
 		}).parent().addClass('active').parent().parent().addClass('active');
 	}
 
+	// autocomplete na /consumables
+	// in entry
 	function setAutoComplete() {
 		// consumables
 		$("#entry-search input[type='text']").autocomplete({
@@ -230,6 +252,8 @@ $(document).ready(function () {
 		});
 	}
 
+	// dropdown, pri katerem si lahko izberemo
+	// katere tipe zivil zelimo videti na /consumables
 	function setFilterByConsumableType() {
 		$("#consumable_type_select").on("change", function () {
 			var selected = $(this).val();
@@ -239,6 +263,9 @@ $(document).ready(function () {
 		})
 	}
 
+	// prikaze in nato odstrani statusna sporocila kot 
+	// so "ustvarjeno", "posodobljeno", "izbrisano"
+	// glede na query parameter v urlju
 	function showHideGrowlMessage() {
 		var searchParams = new URLSearchParams(window.location.search)
 		var changes = searchParams.get('changes');

@@ -36,6 +36,7 @@ def index():
 def domov():
 	redirect('/')
     
+# prikaz zivil
 @app.route('/consumables')
 def consumables(db):
 
@@ -95,7 +96,7 @@ def consumables(db):
 		return template("consumables-list.tpl", consumables = r_consumables, consumable_types = consumable_types, status_text = None)
 
 
-	
+# prikaz podatkov o zivilu
 @app.route('/consumable/<consumable_id>') #<> obvezen parameter
 def consumable(consumable_id, db):
 	q = """SELECT c.id, 
@@ -119,6 +120,7 @@ def consumable(consumable_id, db):
 	nutrients = c.fetchall()
 	return template("consumable-details.tpl", c = consumable, n = nutrients)
 
+# brisanje zivila
 @app.route('/consumable-delete/<id>')
 def consumable_delete(id, db):
 	q = "DELETE FROM consumable WHERE id = ? "
@@ -129,6 +131,7 @@ def consumable_delete(id, db):
 		redirect('/consumable/{id}'.format(id=id))
 
 
+# prikaz podatkov za urejanje zivila
 @app.route('/consumable-edit/<id>')
 def consumable_edit(id, db):
 	# consumable data gets send to a form
@@ -169,7 +172,8 @@ def consumable_edit(id, db):
 	consumable_nutrients = json.dumps([dict(x) for x in consumable_nutrients])
 	return template('consumable.tpl', modify_type = modify_type, ct = consumable_types, n = nutrients, cn = consumable_nutrients, c = consumable)
 
-#POSTING edit consumable
+# shranjevanje v bazo urejanje zivila
+# ajax in json
 @app.route('/consumable-edit/<id>', method='POST')
 def consumable_edit(id, db):
 	try:
@@ -216,6 +220,7 @@ def consumable_edit(id, db):
 		response.status = 500
 		return e
 
+#prikaz vnosnih polj za vnos zivila
 @app.route('/consumables-enter')
 def consumable_enter(db):
 	# db manipulation gets through ajax
@@ -239,7 +244,7 @@ def consumable_enter(db):
 
 	return template('consumable.tpl', modify_type = modify_type, ct = consumable_types, n = nutrients, cn = consumable_nutrients, c = consumable)
 
-# ajax create
+# ajax create za vnos zivila
 @app.route('/consumables-enter', method = 'POST')
 def consumable_enter_post(db): #dietetika js
 
@@ -277,7 +282,7 @@ def consumable_enter_post(db): #dietetika js
 		response.status = 500
 		return e
 
-
+# prikaz hranil
 @app.route('/nutrients')
 def nutrients_list(db):
 
@@ -299,7 +304,7 @@ def nutrients_list(db):
 		nutrients = c.fetchall()
 		return template('nutrient-list.tpl', nutrients = nutrients)
 
-
+#prikaz podatkov o hranilu
 @app.route('/nutrient/<id>')
 def nutrient_details(id, db):
 	q = """SELECT n.id,
@@ -315,13 +320,14 @@ def nutrient_details(id, db):
 
 	return template('nutrient-details.tpl', n = nutrient)
 
+# brisanje hranila
 @app.route('/nutrient-delete/<id>')
 def nutrient_delete(id, db):
 	q = """DELETE FROM nutrient WHERE id = ?"""
 	db.execute(q, id)
 	redirect('/nutrients?changes=deleted')
 
-
+# prikaz vnostnih polj pri vnosu hranila
 @app.route('/nutrients-enter')
 def nutrient_enter(db):
 
@@ -331,6 +337,7 @@ def nutrient_enter(db):
 
 	return template('nutrient.tpl', nt = nutrient_types, n = None)
 
+# shranjevanje podatkov v bazo pri vnosu novega hranila
 @app.route('/nutrients-enter', method='POST') #isto kot app.post je na isti strani
 def nutrient_enter_post(db):
 
@@ -341,8 +348,8 @@ def nutrient_enter_post(db):
 	c = db.execute(q, (title, nutrient_type_id))
 	if (c.rowcount > 0):
 		redirect('/nutrients?changes=saved')
-	# TODO: if err
 
+# prikaz podatkov pri urejanju hranila
 @app.route('/nutrient-edit/<id>')
 def nutrient_edit(id, db): #id rabimo da iščemo v bazi
 
@@ -358,6 +365,7 @@ def nutrient_edit(id, db): #id rabimo da iščemo v bazi
 
 	return template('nutrient.tpl', n = nutrient, nt = nutrient_types)
 
+# shranjevanje v bazo pri urejanju hranila
 @app.route('/nutrient-edit/<id>', method='POST')
 def nutrient_edit_post(id, db):
 
@@ -369,8 +377,8 @@ def nutrient_edit_post(id, db):
 
 	if (c.rowcount > 0):
 		redirect('/nutrients?changes=updated')
-	#TODO: if err
 
+#tipi zivil
 @app.route('/consumable-types')
 def consumable_types(db):
 	q = """SELECT * FROM consumable_type"""
@@ -380,6 +388,7 @@ def consumable_types(db):
 	
 	return template('consumable-type-list.tpl', consumable_types = consumable_types)
 
+#brisanje tipa zivila
 @app.route('/consumable-type-delete/<id>')
 def consumable_types_delete(id, db):
 	q = """DELETE FROM consumable_type WHERE id =:id;"""
@@ -388,6 +397,7 @@ def consumable_types_delete(id, db):
 	if (c.rowcount > 0):
 		redirect('/consumable-types?changes=deleted')
 
+#prikaz tipov zivila
 @app.route('/consumable-type/<id>')
 def consumable_types_details(id, db):
 	q = """SELECT * FROM consumable_type WHERE id = ?;"""
@@ -396,6 +406,7 @@ def consumable_types_details(id, db):
 	consumable_type = c.fetchone()
 	return template('consumable-types-details.tpl', ct = consumable_type)	
 
+#prikaz podatkov za urejanje tipa zivila
 @app.route('/consumable-type-edit/<id>')
 def consumable_types_edit(id, db):
 	q = """SELECT * FROM consumable_type WHERE id = :id;"""
@@ -404,6 +415,7 @@ def consumable_types_edit(id, db):
 
 	return template('consumable-types.tpl', ct = consumable_type)
 
+#shranjevanje sprememb pri urejanju tipa zivila
 @app.route('/consumable-type-edit/<id>', method='POST')
 def consumable_types_edit_post(id, db):
 
@@ -412,12 +424,13 @@ def consumable_types_edit_post(id, db):
 	c = db.execute(q, {'title': title, 'id': id})
 	if (c.rowcount > 0):
 		redirect('/consumable-types?changes=updated')
-	#TODO: handle errs
 
+#prikaz vnosnih polj za vnos tipa zivila
 @app.route('/consumable-types-enter')
 def consumable_types_enter(db):
 	return template('consumable-types.tpl', ct = None)
 
+#shranjevanje v bazo novega tipa zivila
 @app.route('/consumable-types-enter', method='POST')
 def consumable_types_enter_post(db):
 	consumable_type = request.forms.get('title')
@@ -426,8 +439,8 @@ def consumable_types_enter_post(db):
 
 	if (c.rowcount > 0):
 		redirect('/consumable-types?changes=created')
-	#TODO: err handle
 
+#prikaz tipov hranila
 @app.route('/nutrient-types')
 def nutrient_types(db):
 	q = "SELECT * FROM nutrient_type;"
@@ -435,10 +448,12 @@ def nutrient_types(db):
 	nutrient_types = c.fetchall()
 	return template('nutrient-type-list.tpl', nutrient_types = nutrient_types)
 
+#moznost novega vnosa tipa hranila
 @app.route('/nutrient-types-enter')
 def nutrient_types_enter(db):
 	return template('nutrient-type.tpl', nt = None)
 
+#shranjevanje v bazo tipa hranila
 @app.route('/nutrient-types-enter', method='POST')
 def nutrient_types_enter_post(db):
 	title = request.forms.get('title')
@@ -446,8 +461,8 @@ def nutrient_types_enter_post(db):
 	c = db.execute(q, {'title': title})
 	if (c.rowcount > 0):
 		redirect('/nutrient-types?changes=created')
-	#TODO: err handle
 
+#prikaz podatkov pri urejanju tipa hranila
 @app.route('/nutrient-type-edit/<id>')
 def nutrient_types_edit(id, db):
 	q = "SELECT * FROM nutrient_type WHERE id=:id;"
@@ -455,6 +470,7 @@ def nutrient_types_edit(id, db):
 	nutrient_type = c.fetchone()
 	return template('nutrient-type.tpl', nt = nutrient_type)
 
+#shrani spremembe pri urejanju tupa hranila
 @app.route('/nutrient-type-edit/<id>', method = 'POST')
 def nutrient_types_edit_post(id, db):
 	title = request.forms.get('title')
@@ -463,6 +479,7 @@ def nutrient_types_edit_post(id, db):
 	if (c.rowcount>0):
 		redirect('/nutrient-types?changes=updated')
 
+#prikaze tip hranila
 @app.route('/nutrient-type/<id>')
 def nutrient_type(id, db):
 	q = "SELECT * FROM nutrient_type WHERE id=:id;"
@@ -470,6 +487,7 @@ def nutrient_type(id, db):
 	nutrient_type = c.fetchone()
 	return template('nutrient-type-details.tpl', nt = nutrient_type)
 
+#izbrise tip hranila
 @app.route('/nutrient-type-delete/<id>')
 def nutrient_type_delete(id, db):
 	q = "DELETE FROM nutrient_type WHERE id=:id;"

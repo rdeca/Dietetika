@@ -1,5 +1,5 @@
 <div id="created" class="position-message success">
-	<div class="table">
+	<div class="display-table">
 		<div class="table-cell vertical-middle">
 			<div class="glyphicon glyphicon-exclamation-sign"></div>
 		</div>
@@ -9,7 +9,7 @@
 	</div>
 </div>
 <div id="updated" class="position-message success">
-	<div class="table">
+	<div class="display-table">
 		<div class="table-cell vertical-middle">
 			<div class="glyphicon glyphicon-exclamation-sign"></div>
 		</div>
