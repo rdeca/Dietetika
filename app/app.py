@@ -245,7 +245,8 @@ def consumable_enter(db):
 	return template('consumable.tpl', modify_type = modify_type, ct = consumable_types, n = nutrients, cn = consumable_nutrients, c = consumable)
 
 # ajax create za vnos zivila
-@app.route('/consumables-enter', method = 'POST')
+@app.route('/consumables-enter', method = 'POST',
+           sqlite = {'autocommit': False})
 def consumable_enter_post(db): #dietetika js
 
 	try:
@@ -270,17 +271,15 @@ def consumable_enter_post(db): #dietetika js
 					q = """INSERT INTO consumable_has_nutrient (consumable_id, nutrient_id, value) 
 						VALUES (?, ?, ?)"""
 					db.execute(q, (consumable_id, nutrient['id'], nutrient['value']))
-				c = db.execute("COMMIT")
+				db.commit()
 				return json.dumps("Živilo uspešno ustvarjeno.")
-	except db.Error:
-		e = sys.exc_info()[0]
-		db.execute('ROLLBACK') #skensli vse kar je do zdej vnešeno
+	except db.Error as e:
+		db.rollback() #skensli vse kar je do zdej vnešeno
 		response.status = 500 #napaka na serverju
-		return e #console error
-	except:
-		e = sys.exc_info()[0]
+		return str(e) #console error
+	except Exception as e:
 		response.status = 500
-		return e
+		return str(e)
 
 # prikaz hranil
 @app.route('/nutrients')
