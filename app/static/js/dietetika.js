@@ -255,7 +255,7 @@ $(document).ready(function () {
 	// dropdown, pri katerem si lahko izberemo
 	// katere tipe zivil zelimo videti na /consumables
 	function setFilterByConsumableType() {
-		$("#consumable_type_select").on("change", function () {
+		$(".search-wrapper #consumable_type_select").on("change", function () {
 			var selected = $(this).val();
 			if (selected != -1) {
 				$(this).closest('form').submit();
