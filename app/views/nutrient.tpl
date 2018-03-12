@@ -18,7 +18,7 @@
 				% end
 
 				<div class="form-group">
-					<label for="title">Hranilna Vrednost:</label>
+					<label for="title">Hranilo:</label>
 					<input name="title" type="text" class="form-control" id="title"
 					% if (n and n['title']):
 					value = '{{n["title"]}}'
