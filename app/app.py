@@ -341,8 +341,8 @@ def nutrient_enter(db):
 @app.route('/nutrients-enter', method='POST') #isto kot app.post je na isti strani
 def nutrient_enter_post(db):
 
-	title = request.forms.get('title') #glede na name
-	nutrient_type_id = request.forms.get('nutrient_type_id')
+	title = request.forms.title #glede na name
+	nutrient_type_id = request.forms.nutrient_type_id
 
 	q = """INSERT INTO nutrient (title, nutrient_type_id) VALUES (?, ?);"""
 	c = db.execute(q, (title, nutrient_type_id))
@@ -369,8 +369,8 @@ def nutrient_edit(id, db): #id rabimo da iščemo v bazi
 @app.route('/nutrient-edit/<id>', method='POST')
 def nutrient_edit_post(id, db):
 
-	title = request.forms.get('title')
-	nutrient_type_id = request.forms.get('nutrient_type_id')
+	title = request.forms.title
+	nutrient_type_id = request.forms.nutrient_type_id
 
 	q = """UPDATE nutrient SET title = :title, nutrient_type_id = :n_type_id WHERE id = :id;"""
 	c = db.execute(q, {'title': title, 'n_type_id': nutrient_type_id, 'id': id})
@@ -419,7 +419,7 @@ def consumable_types_edit(id, db):
 @app.route('/consumable-type-edit/<id>', method='POST')
 def consumable_types_edit_post(id, db):
 
-	title = request.forms.get('title')
+	title = request.forms.title
 	q = """UPDATE consumable_type SET title = :title WHERE id = :id;"""
 	c = db.execute(q, {'title': title, 'id': id})
 	if (c.rowcount > 0):
@@ -433,7 +433,7 @@ def consumable_types_enter(db):
 #shranjevanje v bazo novega tipa zivila
 @app.route('/consumable-types-enter', method='POST')
 def consumable_types_enter_post(db):
-	consumable_type = request.forms.get('title')
+	consumable_type = request.forms.title
 	q = """INSERT INTO consumable_type (title) VALUES (:title);"""
 	c = db.execute(q, {'title': consumable_type})
 
@@ -456,7 +456,7 @@ def nutrient_types_enter(db):
 #shranjevanje v bazo tipa hranila
 @app.route('/nutrient-types-enter', method='POST')
 def nutrient_types_enter_post(db):
-	title = request.forms.get('title')
+	title = request.forms.title
 	q = """INSERT INTO nutrient_type (title) VALUES (:title);"""
 	c = db.execute(q, {'title': title})
 	if (c.rowcount > 0):
@@ -473,7 +473,7 @@ def nutrient_types_edit(id, db):
 #shrani spremembe pri urejanju tupa hranila
 @app.route('/nutrient-type-edit/<id>', method = 'POST')
 def nutrient_types_edit_post(id, db):
-	title = request.forms.get('title')
+	title = request.forms.title
 	q = """UPDATE nutrient_type SET title=:title WHERE id=:id;"""
 	c = db.execute(q, {'title': title, 'id':id})
 	if (c.rowcount>0):
