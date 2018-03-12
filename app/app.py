@@ -177,6 +177,7 @@ def consumable_edit(id, db):
 @app.route('/consumable-edit/<id>', method='POST')
 def consumable_edit(id, db):
 	try:
+		db.isolation_level = "DEFERRED"
 		req_json = request.json
 
 		q = """UPDATE consumable 
@@ -212,7 +213,7 @@ def consumable_edit(id, db):
 		return json.dumps('Živilo uspešno posodobljeno.')
 	except db.Error:
 		e = sys.exc_info()[0]
-		db.execute('ROLLBACK')
+		db.rollback()
 		response.status = 500
 		return e
 	except:
@@ -249,6 +250,7 @@ def consumable_enter(db):
 def consumable_enter_post(db): #dietetika js
 
 	try:
+		db.isolation_level = "DEFERRED"
 		req_json = request.json
 
 		# 1. add consumable
@@ -270,11 +272,11 @@ def consumable_enter_post(db): #dietetika js
 					q = """INSERT INTO consumable_has_nutrient (consumable_id, nutrient_id, value) 
 						VALUES (?, ?, ?)"""
 					db.execute(q, (consumable_id, nutrient['id'], nutrient['value']))
-				c = db.execute("COMMIT")
+				c = db.commit()
 				return json.dumps("Živilo uspešno ustvarjeno.")
 	except db.Error:
 		e = sys.exc_info()[0]
-		db.execute('ROLLBACK') #skensli vse kar je do zdej vnešeno
+		db.rollback() #skensli vse kar je do zdej vnešeno
 		response.status = 500 #napaka na serverju
 		return e #console error
 	except:
