@@ -174,7 +174,7 @@ def consumable_edit(id, db):
 
 # shranjevanje v bazo urejanje zivila
 # ajax in json
-@app.route('/consumable-edit/<id>', method='POST')
+@app.route('/consumable-edit/<id>', method='POST', sqlite = {'autocommit': False})
 def consumable_edit(id, db):
 	try:
 		db.isolation_level = "DEFERRED"
@@ -210,19 +210,22 @@ def consumable_edit(id, db):
 		q = """DELETE FROM consumable_has_nutrient WHERE consumable_id = ? AND nutrient_id NOT IN (%s)""" % ("?," * len(valid_nutrient_ids))[:-1]
 		valid_nutrient_ids.insert(0, id)
 		c = db.execute(q, valid_nutrient_ids)
+		db.commit()
 		return json.dumps('Živilo uspešno posodobljeno.')
 	except db.IntegrityError:
+		db.rollback()
 		response.status = 500
 		return 'Živilo s takšnim imenom že obstaja'
 	except db.Error:
 		e = sys.exc_info()[0]
 		db.rollback()
 		response.status = 500
-		return e
+		return str(e)
 	except:
+		db.rollback()
 		e = sys.exc_info()[0]
 		response.status = 500
-		return e
+		return str(e)
 
 #prikaz vnosnih polj za vnos zivila
 @app.route('/consumables-enter')
@@ -283,11 +286,12 @@ def consumable_enter_post(db): #dietetika js
 		response.status = 500
 		return "Živilo s takšnim imenom že obstaja"
 	except db.Error:
-		e = sys.exc_info()[0]
 		db.rollback() #skensli vse kar je do zdej vnešeno
+		e = sys.exc_info()[0]
 		response.status = 500 #napaka na serverju
 		return str(e) #console error
 	except Exception as e:
+		db.rollback()
 		response.status = 500
 		return str(e)
 
