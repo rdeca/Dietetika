@@ -249,7 +249,8 @@ def consumable_enter(db):
 	return template('consumable.tpl', modify_type = modify_type, ct = consumable_types, n = nutrients, cn = consumable_nutrients, c = consumable, e = None)
 
 # ajax create za vnos zivila
-@app.route('/consumables-enter', method = 'POST')
+@app.route('/consumables-enter', method = 'POST',
+           sqlite = {'autocommit': False})
 def consumable_enter_post(db): #dietetika js
 
 	try:
@@ -285,11 +286,10 @@ def consumable_enter_post(db): #dietetika js
 		e = sys.exc_info()[0]
 		db.rollback() #skensli vse kar je do zdej vnešeno
 		response.status = 500 #napaka na serverju
-		return e #console error
-	except:
-		e = sys.exc_info()[0]
+		return str(e) #console error
+	except Exception as e:
 		response.status = 500
-		return e
+		return str(e)
 
 # prikaz hranil
 @app.route('/nutrients')
