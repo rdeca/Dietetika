@@ -5,22 +5,18 @@
 		<a class='btn btn-primary' href='/consumables'>Seznam vseh</a>
 		<hr>
 	</div>
-	<div id="errors-wrapper" class="alert alert-danger hidden">
-		<ul>
-
-		</ul>
-	</div>
+	%include('./base/error.tpl')
 	<div class="row">
 		<div class="col-sm-8">
 			<form id="consumable-modify" data-modify-type='{{modify_type}}'>
-				% if (c and c['id']):
+				% if (c and ('id' in c.keys())):
 				<input id="consumable_id" type="text" value = '{{c["id"]}}' class='hidden'>
 				% end
 
 				<div class="form-group">
 					<label for="title">Živilo:</label>
 					<input type="text" class="form-control" id="title"
-					% if (c and c['title']):
+					% if (c and ('title' in c.keys())):
 					value = '{{c["title"]}}'
 					% end
 					required data-required-error='Obvezno polje'>
@@ -31,7 +27,7 @@
 					<select name="consumable_type_select" id="consumable_type_select" required data-required-error='Izberite eno izmed izbir' class='form-control'>
 						% for con_type in ct:
 						<option value="{{con_type['id']}}" 
-						% if (c and c['consumable_type_id'] and c['consumable_type_id'] == con_type['id']):
+						% if (c and ('consumable_type_id' in c.keys()) and c['consumable_type_id'] == con_type['id']):
 						selected
 						% end
 						 >{{con_type['title']}}</option>
@@ -42,7 +38,7 @@
 				<div class="form-group">
 					<label for="calories">Kalorije:</label>
 					<input type="text" class="form-control" required data-required-error='Obvezno polje'id="calories" 
-					% if (c and c['calories']):
+					% if (c and ('calories' in c.keys())):
 					value='{{c["calories"]}}'
 					% end
 					>

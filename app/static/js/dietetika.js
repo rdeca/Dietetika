@@ -165,8 +165,14 @@ $(document).ready(function () {
 				}
 			},
 			error: function (xhr, status, error) {
-				// handle error
-				console.error(error);
+
+				// dodaj error
+				var errDiv = "<div id='errors-wrapper' class='alert alert-danger'>";
+				errDiv += "<strong>Napaka: </strong>";
+				errDiv += "<p>"+xhr.responseText+"</p>";
+				errDiv += "</div>";
+
+				$("#errors-outer-wrapper").append($(errDiv));
 			}
 		});
 	});

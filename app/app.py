@@ -170,7 +170,7 @@ def consumable_edit(id, db):
 	c = db.execute(q, (id,))
 	consumable_nutrients = c.fetchall()
 	consumable_nutrients = json.dumps([dict(x) for x in consumable_nutrients])
-	return template('consumable.tpl', modify_type = modify_type, ct = consumable_types, n = nutrients, cn = consumable_nutrients, c = consumable)
+	return template('consumable.tpl', modify_type = modify_type, ct = consumable_types, n = nutrients, cn = consumable_nutrients, c = consumable, e = None)
 
 # shranjevanje v bazo urejanje zivila
 # ajax in json
@@ -211,6 +211,9 @@ def consumable_edit(id, db):
 		valid_nutrient_ids.insert(0, id)
 		c = db.execute(q, valid_nutrient_ids)
 		return json.dumps('Živilo uspešno posodobljeno.')
+	except db.IntegrityError:
+		response.status = 500
+		return 'Živilo s takšnim imenom že obstaja'
 	except db.Error:
 		e = sys.exc_info()[0]
 		db.rollback()
@@ -243,7 +246,7 @@ def consumable_enter(db):
 	consumable_nutrients = None #tuki še ne obstaja
 	consumable = None
 
-	return template('consumable.tpl', modify_type = modify_type, ct = consumable_types, n = nutrients, cn = consumable_nutrients, c = consumable)
+	return template('consumable.tpl', modify_type = modify_type, ct = consumable_types, n = nutrients, cn = consumable_nutrients, c = consumable, e = None)
 
 # ajax create za vnos zivila
 @app.route('/consumables-enter', method = 'POST')
@@ -274,6 +277,10 @@ def consumable_enter_post(db): #dietetika js
 					db.execute(q, (consumable_id, nutrient['id'], nutrient['value']))
 				c = db.commit()
 				return json.dumps("Živilo uspešno ustvarjeno.")
+	except db.IntegrityError:
+		db.rollback()
+		response.status = 500
+		return "Živilo s takšnim imenom že obstaja"
 	except db.Error:
 		e = sys.exc_info()[0]
 		db.rollback() #skensli vse kar je do zdej vnešeno
@@ -337,19 +344,26 @@ def nutrient_enter(db):
 	c = db.execute(q)
 	nutrient_types = c.fetchall()
 
-	return template('nutrient.tpl', nt = nutrient_types, n = None)
+	return template('nutrient.tpl', nt = nutrient_types, n = None, e = None)
 
 # shranjevanje podatkov v bazo pri vnosu novega hranila
 @app.route('/nutrients-enter', method='POST') #isto kot app.post je na isti strani
 def nutrient_enter_post(db):
+	try:
+		title = request.forms.title #glede na name
+		#ker je INT FK ga je potrebno pretvorit iz stringa v int, drugače ne primerja prov v integrity err templateu
+		nutrient_type_id = int(request.forms.nutrient_type_id) 
+		nutrient = {'title': title, 'nutrient_type_id': nutrient_type_id}
+		q = """INSERT INTO nutrient (title, nutrient_type_id) VALUES (:title, :nutrient_type_id);"""
+		c = db.execute(q, nutrient)
+		if (c.rowcount > 0):
+			redirect('/nutrients?changes=saved')
+	except db.IntegrityError:
+		q = """SELECT * FROM nutrient_type;""" #pokažemo v dropdownu
+		c = db.execute(q)
+		nutrient_types = c.fetchall()
+		return template('nutrient.tpl', nt = nutrient_types, n = nutrient, e = "Hranilo s takšnim imenom že obstaja")
 
-	title = request.forms.title #glede na name
-	nutrient_type_id = request.forms.nutrient_type_id
-
-	q = """INSERT INTO nutrient (title, nutrient_type_id) VALUES (?, ?);"""
-	c = db.execute(q, (title, nutrient_type_id))
-	if (c.rowcount > 0):
-		redirect('/nutrients?changes=saved')
 
 # prikaz podatkov pri urejanju hranila
 @app.route('/nutrient-edit/<id>')
@@ -365,20 +379,26 @@ def nutrient_edit(id, db): #id rabimo da iščemo v bazi
 	c = db.execute(q)
 	nutrient_types = c.fetchall()
 
-	return template('nutrient.tpl', n = nutrient, nt = nutrient_types)
+	return template('nutrient.tpl', n = nutrient, nt = nutrient_types, e = None)
 
 # shranjevanje v bazo pri urejanju hranila
 @app.route('/nutrient-edit/<id>', method='POST')
 def nutrient_edit_post(id, db):
 
-	title = request.forms.title
-	nutrient_type_id = request.forms.nutrient_type_id
+	try: 
+		title = request.forms.title
+		nutrient_type_id = int(request.forms.nutrient_type_id) #string v int ( ni potrebno za bazo ampak ce pride do integrity err in b)
+		nutrient = {'title': title, 'nutrient_type_id': nutrient_type_id, 'id': id}
+		q = """UPDATE nutrient SET title = :title, nutrient_type_id = :nutrient_type_id WHERE id = :id;"""
+		c = db.execute(q, nutrient)
 
-	q = """UPDATE nutrient SET title = :title, nutrient_type_id = :n_type_id WHERE id = :id;"""
-	c = db.execute(q, {'title': title, 'n_type_id': nutrient_type_id, 'id': id})
-
-	if (c.rowcount > 0):
-		redirect('/nutrients?changes=updated')
+		if (c.rowcount > 0):
+			redirect('/nutrients?changes=updated')
+	except db.IntegrityError:
+		q = """SELECT * FROM nutrient_type;""" #pokažemo v dropdownu
+		c = db.execute(q)
+		nutrient_types = c.fetchall()
+		return template('nutrient.tpl', n = nutrient, nt = nutrient_types, e = 'Hranilo s takim imenom že obstaja')
 
 #tipi zivil
 @app.route('/consumable-types')
@@ -415,32 +435,39 @@ def consumable_types_edit(id, db):
 	c = db.execute(q, {'id': id})
 	consumable_type = c.fetchone()
 
-	return template('consumable-types.tpl', ct = consumable_type)
+	return template('consumable-types.tpl', ct = consumable_type, e = None)
 
 #shranjevanje sprememb pri urejanju tipa zivila
 @app.route('/consumable-type-edit/<id>', method='POST')
 def consumable_types_edit_post(id, db):
-
-	title = request.forms.title
-	q = """UPDATE consumable_type SET title = :title WHERE id = :id;"""
-	c = db.execute(q, {'title': title, 'id': id})
-	if (c.rowcount > 0):
-		redirect('/consumable-types?changes=updated')
+	try:
+		title = request.forms.title
+		consumable_type = {'title': title, 'id': id}
+		q = """UPDATE consumable_type SET title = :title WHERE id = :id;"""
+		c = db.execute(q, consumable_type)
+		if (c.rowcount > 0):
+			redirect('/consumable-types?changes=updated')
+	except db.IntegrityError as e:
+			return template('consumable-types.tpl', ct = consumable_type, e = "Tip živila s takim imenom že obstaja")
 
 #prikaz vnosnih polj za vnos tipa zivila
 @app.route('/consumable-types-enter')
 def consumable_types_enter(db):
-	return template('consumable-types.tpl', ct = None)
+	return template('consumable-types.tpl', ct = None, e = None)
 
 #shranjevanje v bazo novega tipa zivila
 @app.route('/consumable-types-enter', method='POST')
 def consumable_types_enter_post(db):
-	consumable_type = request.forms.title
-	q = """INSERT INTO consumable_type (title) VALUES (:title);"""
-	c = db.execute(q, {'title': consumable_type})
+	try:
+		consumable_type_title = request.forms.title
+		consumable_type = {'title': consumable_type_title}
+		q = """INSERT INTO consumable_type (title) VALUES (:title);"""
+		c = db.execute(q, consumable_type)
 
-	if (c.rowcount > 0):
-		redirect('/consumable-types?changes=created')
+		if (c.rowcount > 0):
+			redirect('/consumable-types?changes=created')
+	except db.IntegrityError as e:
+		return template('consumable-types.tpl', ct = consumable_type, e = "Tip živila s takim imenom že obstaja")
 
 #prikaz tipov hranila
 @app.route('/nutrient-types')
@@ -453,16 +480,20 @@ def nutrient_types(db):
 #moznost novega vnosa tipa hranila
 @app.route('/nutrient-types-enter')
 def nutrient_types_enter(db):
-	return template('nutrient-type.tpl', nt = None)
+	return template('nutrient-type.tpl', nt = None, e = None)
 
 #shranjevanje v bazo tipa hranila
 @app.route('/nutrient-types-enter', method='POST')
 def nutrient_types_enter_post(db):
-	title = request.forms.title
-	q = """INSERT INTO nutrient_type (title) VALUES (:title);"""
-	c = db.execute(q, {'title': title})
-	if (c.rowcount > 0):
-		redirect('/nutrient-types?changes=created')
+	try:
+		title = request.forms.title
+		q = """INSERT INTO nutrient_type (title) VALUES (:title);"""
+		nutrient_type = {'title': title}
+		c = db.execute(q, nutrient_type)
+		if (c.rowcount > 0):
+			redirect('/nutrient-types?changes=created')
+	except db.IntegrityError:
+		return template('nutrient-type.tpl', nt = nutrient_type, e = "Tip hranila s takim imenom že obstaja")
 
 #prikaz podatkov pri urejanju tipa hranila
 @app.route('/nutrient-type-edit/<id>')
@@ -470,16 +501,20 @@ def nutrient_types_edit(id, db):
 	q = "SELECT * FROM nutrient_type WHERE id=:id;"
 	c = db.execute(q, {'id': id})
 	nutrient_type = c.fetchone()
-	return template('nutrient-type.tpl', nt = nutrient_type)
+	return template('nutrient-type.tpl', nt = nutrient_type, e = None)
 
 #shrani spremembe pri urejanju tupa hranila
 @app.route('/nutrient-type-edit/<id>', method = 'POST')
 def nutrient_types_edit_post(id, db):
-	title = request.forms.title
-	q = """UPDATE nutrient_type SET title=:title WHERE id=:id;"""
-	c = db.execute(q, {'title': title, 'id':id})
-	if (c.rowcount>0):
-		redirect('/nutrient-types?changes=updated')
+	try:
+		title = request.forms.title
+		nutrient_type = {'title': title, 'id':id}
+		q = """UPDATE nutrient_type SET title=:title WHERE id=:id;"""
+		c = db.execute(q, nutrient_type)
+		if (c.rowcount>0):
+			redirect('/nutrient-types?changes=updated')
+	except db.IntegrityError:
+		return template('nutrient-type.tpl', nt = nutrient_type, e = "Tip hranila s takim imenom že obstaja")
 
 #prikaze tip hranila
 @app.route('/nutrient-type/<id>')
