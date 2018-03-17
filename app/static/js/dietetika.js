@@ -165,8 +165,14 @@ $(document).ready(function () {
 				}
 			},
 			error: function (xhr, status, error) {
-				// handle error
-				console.error(error);
+
+				// dodaj error
+				var errDiv = "<div id='errors-wrapper' class='alert alert-danger'>";
+				errDiv += "<strong>Napaka: </strong>";
+				errDiv += "<p>"+xhr.responseText+"</p>";
+				errDiv += "</div>";
+
+				$("#errors-outer-wrapper").append($(errDiv));
 			}
 		});
 	});
@@ -255,7 +261,7 @@ $(document).ready(function () {
 	// dropdown, pri katerem si lahko izberemo
 	// katere tipe zivil zelimo videti na /consumables
 	function setFilterByConsumableType() {
-		$("#consumable_type_select").on("change", function () {
+		$(".search-wrapper #consumable_type_select").on("change", function () {
 			var selected = $(this).val();
 			if (selected != -1) {
 				$(this).closest('form').submit();

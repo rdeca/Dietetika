@@ -5,22 +5,18 @@
 		<a class='btn btn-primary' href='/nutrient-types'>Seznam vseh</a>
 		<hr>
 	</div>
-	<div id="errors-wrapper" class="alert alert-danger hidden">
-		<ul>
-
-		</ul>
-	</div>
+	%include('./base/error.tpl')
 	<div class="row">
 		<div class="col-sm-8">
 			<form id="nutrient-modify" method='POST'>
-				% if (nt and nt['id']):
+				% if (nt and ('id' in nt.keys())):
 				<input id="name" type="text" name='id' value = '{{nt["id"]}}' class='hidden'>
 				% end
 
 				<div class="form-group">
 					<label for="title">Tip:</label>
 					<input name="title" type="text" required data-required-error='Obvezno polje' class="form-control" id="title"
-					% if (nt and nt['title']):
+					% if (nt and ('title' in nt.keys())):
 					value = '{{nt["title"]}}'
 					% end
 					>
